@@ -1,0 +1,1229 @@
+﻿using System.Data.SqlClient;
+using System.Data;
+using LoginForm.Models;
+using LoginForm.Data;
+using Microsoft.Data.SqlClient;
+namespace LoginForm.Repository
+{
+    public class ERPRepository : IERPRepository
+    {
+
+        private readonly DbHelper _dbHelper;
+
+        public ERPRepository(DbHelper dbHelper)
+        {
+            _dbHelper = dbHelper;
+        }
+        // Retrieve all raw materials
+        public bool ValidateCredentials(string UserName, string Passcode)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                const string sql = @"
+                           SELECT COUNT(*) 
+                          FROM UserSignup 
+                          WHERE UserName = @UserName 
+                          AND Passcode = @Passcode";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@UserName", UserName);
+                cmd.Parameters.AddWithValue("@Passcode", Passcode);
+                con.Open();
+                int count = (int)cmd.ExecuteScalar();
+                con.Close();
+                return count > 0;
+            }
+        }
+        public void LogLogin(string UserName, string Passcode)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                const string sql = @"
+                           INSERT INTO UserLogin (UserName, Passcode) 
+                          VALUES (@UserName, @Passcode)";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@UserName", UserName);
+                cmd.Parameters.AddWithValue("@Passcode", Passcode);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<RawMaterials> GetAllRawMaterials()
+        {
+            List<RawMaterials> rawMaterialsList = new List<RawMaterials>();
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.RawMaterials";
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    rawMaterialsList.Add(new RawMaterials
+                    {
+                        RawMaterialID = Convert.ToInt32(reader["RawMaterialID"]),
+                        MaterialName = reader["MaterialName"].ToString(),
+                        MaterialType = reader["MaterialType"].ToString(),
+                        UnitOfMeasure = reader["UnitOfMeasure"].ToString(),
+                        Description = reader["Description"].ToString()
+                    });
+                }
+                con.Close();
+            }
+
+            return rawMaterialsList;
+        }
+        public void InsertPurchaseOrder(int SupplierID, DateTime OrderDate, DateTime DeliveryDate, Decimal TotalAmount, string Status)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Manufacture.PurchaseOrders (SupplierID, OrderDate, DeliveryDate, TotalAmount, Status) VALUES (@SupplierID, @OrderDate, @DeliveryDate, @TotalAmount, @Status)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SupplierID", SupplierID);
+                cmd.Parameters.AddWithValue("@OrderDate", OrderDate);
+                cmd.Parameters.AddWithValue("@DeliveryDate", DeliveryDate);
+                cmd.Parameters.AddWithValue("@TotalAmount", TotalAmount);
+                cmd.Parameters.AddWithValue("@Status", Status);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+
+        public PurchaseOrders GetPurchaseOrderById(int orderID)
+        {
+            PurchaseOrders order = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.PurchaseOrders WHERE OrderID = @OrderID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@OrderID", orderID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    order = new PurchaseOrders
+                    {
+                        OrderID = Convert.ToInt32(reader["OrderID"]),
+                        SupplierID = Convert.ToInt32(reader["SupplierID"]),
+                        OrderDate = Convert.ToDateTime(reader["OrderDate"]),
+                        DeliveryDate = reader["DeliveryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DeliveryDate"]),
+                        TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
+                        Status = reader["Status"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return order;
+        }
+        public void UpdatePurchaseOrder(int OrderID, int SupplierID, DateTime OrderDate, DateTime? DeliveryDate, decimal TotalAmount, string Status)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = @"UPDATE Manufacture.PurchaseOrders 
+                             SET SupplierID = @SupplierID, 
+                                 OrderDate = @OrderDate, 
+                                 DeliveryDate = @DeliveryDate, 
+                                 TotalAmount = @TotalAmount, 
+                                 Status = @Status 
+                             WHERE OrderID = @OrderID";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@OrderID", OrderID);
+                    cmd.Parameters.AddWithValue("@SupplierID", SupplierID);
+                    cmd.Parameters.AddWithValue("@OrderDate", OrderDate);
+                    cmd.Parameters.AddWithValue("@DeliveryDate", (object?)DeliveryDate ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@TotalAmount", TotalAmount);
+                    cmd.Parameters.AddWithValue("@Status", Status);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void DeletePurchaseOrder(int OrderID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "DELETE FROM Manufacture.PurchaseOrders WHERE OrderID = @OrderID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@OrderID", OrderID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+
+        // Retrieve a single raw material by ID
+        public RawMaterials GetRawMaterialById(int rawMaterialId)
+        {
+            RawMaterials material = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.RawMaterials WHERE RawMaterialID = @RawMaterialID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@RawMaterialID", rawMaterialId);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    material = new RawMaterials
+                    {
+                        RawMaterialID = Convert.ToInt32(reader["RawMaterialID"]),
+                        MaterialName = reader["MaterialName"].ToString(),
+                        MaterialType = reader["MaterialType"].ToString(),
+                        UnitOfMeasure = reader["UnitOfMeasure"].ToString(),
+                        Description = reader["Description"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return material;
+        }
+        public void InsertRawMaterials(string MaterialName, string MaterialType, string UnitOfMeasure, string Description)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Manufacture.RawMaterials (MaterialName, MaterialType, UnitOfMeasure, Description) VALUES (@MaterialName, @MaterialType, @UnitOfMeasure, @Description)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@MaterialName", MaterialName);
+                cmd.Parameters.AddWithValue("@MaterialType", MaterialType);
+                cmd.Parameters.AddWithValue("@UnitOfMeasure", UnitOfMeasure);
+                cmd.Parameters.AddWithValue("@Description", Description);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void UpdateRawMaterials(int RawMaterialID, string MaterialName, string MaterialType, string UnitOfMeasure, string Description)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "UPDATE Manufacture.RawMaterials SET MaterialName = @MaterialName, MaterialType = @MaterialType, UnitOfMeasure = @UnitOfMeasure, Description = @Description WHERE RawMaterialID = @RawMaterialID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@RawMaterialID", RawMaterialID);
+                cmd.Parameters.AddWithValue("@MaterialName", MaterialName);
+                cmd.Parameters.AddWithValue("@MaterialType", MaterialType);
+                cmd.Parameters.AddWithValue("@UnitOfMeasure", UnitOfMeasure);
+                cmd.Parameters.AddWithValue("@Description", Description);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void DeleteRawMaterials(int RawMaterialID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "DELETE FROM Manufacture.RawMaterials WHERE RawMaterialID = @RawMaterialID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@RawMaterialID", RawMaterialID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void InsertSuppliers(string SupplierName, string SupplierContact)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Supply.Suppliers (SupplierName, SupplierContact) VALUES (@SupplierName, @SupplierContact)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SupplierName", SupplierName);
+                cmd.Parameters.AddWithValue("@SupplierContact", SupplierContact);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+
+        }
+     public Suppliers GetSupplierById(int SupplierID)
+        {
+            Suppliers supplier = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.Suppliers WHERE SupplierID = @SupplierID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SupplierID", SupplierID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    supplier = new Suppliers
+                    {
+                        SupplierID = Convert.ToInt32(reader["SupplierID"]),
+                        SupplierName = reader["SupplierName"].ToString(),
+                        SupplierContact = reader["SupplierContact"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return supplier;
+        }
+        public List<Suppliers> GetAllSuppliers()
+        {
+            List<Suppliers> suppliersList = new List<Suppliers>();
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.Suppliers";
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    suppliersList.Add(new Suppliers
+                    {
+                        SupplierID = Convert.ToInt32(reader["SupplierID"]),
+                        SupplierName = reader["SupplierName"].ToString(),
+                        SupplierContact = reader["SupplierContact"].ToString()
+                    });
+                }
+                con.Close();
+            }
+
+            return suppliersList;
+        }
+        //public Suppliers GetSupplierById(int SupplierID)
+        //{
+        //    Suppliers supplier = null;
+        //    using (SqlConnection con = _dbHelper.GetConnection())
+        //    {
+        //        string query = "SELECT * FROM Supply.Suppliers WHERE SupplierID = @SupplierID";
+        //        SqlCommand cmd = new SqlCommand("GetSupplierByID", con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@SupplierID", SupplierID);
+        //        con.Open();
+        //        SqlDataReader reader = cmd.ExecuteReader();
+        //        if (reader.Read())
+        //        {
+        //            supplier = new Suppliers
+        //            {
+        //                SupplierId = Convert.ToInt32(reader["SupplierID"]),
+        //                SupplierName = reader["SupplierName"].ToString(),
+        //                SupplierContact = reader["SupplierContact"].ToString()
+        //            };
+        //        }
+        //        con.Close();
+        //    }
+        //    return supplier;
+        //}
+        public void UpdateSuppliers(int SupplierId, string SupplierName, string SupplierContact)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "UPDATE Supply.Suppliers SET SupplierName = @SupplierName, SupplierContact = @SupplierContact WHERE SupplierID = @SupplierID";
+                SqlCommand cmd = new SqlCommand("UpdateSupplier", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@SupplierID", SupplierId);
+                cmd.Parameters.AddWithValue("@SupplierName", SupplierName);
+                cmd.Parameters.AddWithValue("@SupplierContact", SupplierContact);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void DeleteSuppliers(int SupplierId)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "DELETE FROM Supply.Suppliers WHERE SupplierID = @SupplierID";
+                SqlCommand cmd = new SqlCommand("DeleteSupplier", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@SupplierID", SupplierId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        //public void InsertPurchaseOrder(int SupplierID, DateTime OrderDate, DateTime DeliveryDate, Decimal TotalAmount, string Status)
+        //{
+        //    using (SqlConnection con = _dbHelper.GetConnection())
+        //    {
+        //        string query = "INSERT INTO Manufacture.PurchaseOrders (SupplierID, OrderDate, DeliveryDate, TotalAmount, Status) VALUES (@SupplierID, @OrderDate, @DeliveryDate, @TotalAmount, @Status)";
+        //        SqlCommand cmd = new SqlCommand(query, con);
+        //        cmd.Parameters.AddWithValue("@SupplierID", SupplierID);
+        //        cmd.Parameters.AddWithValue("@OrderDate", OrderDate);
+        //        cmd.Parameters.AddWithValue("@DeliveryDate", DeliveryDate);
+        //        cmd.Parameters.AddWithValue("@TotalAmount", TotalAmount);
+        //        cmd.Parameters.AddWithValue("@Status", Status);
+        //        con.Open();
+        //        cmd.ExecuteNonQuery();
+        //        con.Close();
+        //    }
+        //}
+        public List<PurchaseOrders> GetAllPurchaseOrders()
+        {
+            List<PurchaseOrders> orders = new List<PurchaseOrders>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.PurchaseOrders";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    orders.Add(new PurchaseOrders
+                    {
+                        OrderID = Convert.ToInt32(reader["OrderID"]),
+                        SupplierID = Convert.ToInt32(reader["SupplierID"]),
+                        OrderDate = Convert.ToDateTime(reader["OrderDate"]),
+                        DeliveryDate = reader["DeliveryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DeliveryDate"]),
+                        TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
+                        Status = reader["Status"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return orders;
+        }
+
+        public void AddWeaving(string weave_type, string loomtype)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "INSERT INTO Manufacture.Weaving (weave_type, loomtype) VALUES (@weave_type, @loomtype)";
+                SqlCommand cmd = new SqlCommand("InsertWeavingProcess", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@weave_type", weave_type);
+                cmd.Parameters.AddWithValue("@loomtype", loomtype);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<Weaving_process> GetWeavingProcess()
+        {
+            List<Weaving_process> weavingList = new List<Weaving_process>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "SELECT * FROM Manufacture.Weaving";
+                SqlCommand cmd = new SqlCommand("GetWeavingProcess", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    weavingList.Add(new Weaving_process
+                    {
+                        WeaveID = Convert.ToInt32(reader["WeaveID"]),
+                        weave_type = reader["weave_type"].ToString(),
+                        loomType = reader["loomtype"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return weavingList;
+        }
+        public void UpdateWeaving(int WeaveID, string weave_type, string loomtype)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "UPDATE Manufacture.Weaving SET weave_type = @weave_type, loomtype = @loomtype WHERE WeaveID = @WeaveID";
+                SqlCommand cmd = new SqlCommand("UpdateWeavingProcess", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@WeaveID", WeaveID);
+                cmd.Parameters.AddWithValue("@weave_type", weave_type);
+                cmd.Parameters.AddWithValue("@loomtype", loomtype);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void DeleteWeaving(int WeaveID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "DELETE FROM Manufacture.Weaving WHERE WeaveID = @WeaveID";
+                SqlCommand cmd = new SqlCommand("DeleteWeavingProcess", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@WeaveID", WeaveID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public Weaving_process GetWeavingById(int WeaveID)
+        {
+            Weaving_process weaving = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                //string query = "SELECT * FROM Manufacture.Weaving WHERE WeaveID = @WeaveID";
+                SqlCommand cmd = new SqlCommand("GetWeavingProcessByID", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@WeaveID", WeaveID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    weaving = new Weaving_process
+                    {
+                        WeaveID = Convert.ToInt32(reader["WeaveID"]),
+                        weave_type = reader["weave_type"].ToString(),
+                        loomType = reader["loomtype"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return weaving;
+        }
+        public void AddProductColor(string colorName)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Manufacture.ProductColor (ColorName) VALUES (@ColorName)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ColorName", colorName);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<ProductColor> GetProductColor()
+        {
+            List<ProductColor> colorList = new List<ProductColor>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.ProductColor";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    colorList.Add(new ProductColor
+                    {
+                        ColorID = Convert.ToInt32(reader["ColorID"]),
+                        ColorName = reader["ColorName"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return colorList;
+        }
+        public ProductColor GetProductColorById(int colorID)
+        {
+            ProductColor productcolor = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.ProductColor WHERE ColorID = @ColorID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ColorID", colorID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    productcolor = new ProductColor
+                    {
+                        ColorID = Convert.ToInt32(reader["ColorID"]),
+                        ColorName = reader["ColorName"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return productcolor;
+        }
+
+        public void UpdateProductColor(int colorID, string colorName)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "UPDATE Manufacture.ProductColor SET ColorName = @ColorName WHERE ColorID = @ColorID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ColorID", colorID);
+                cmd.Parameters.AddWithValue("@ColorName", colorName);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void DelProductColor(int colorID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "DELETE FROM Manufacture.ProductColor WHERE ColorID = @ColorID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ColorID", colorID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void AddFabric(string FabricName)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Manufacture.Fabrics (FabricName) VALUES (@FabricName)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@FabricName", FabricName);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+
+        }
+        public List<Fabrics> GetFabric()
+        {
+            List<Fabrics> fabricList = new List<Fabrics>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.Fabrics";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    fabricList.Add(new Fabrics
+                    {
+                        FabricID = Convert.ToInt32(reader["FabricID"]),
+                        FabricName = reader["FabricName"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return fabricList;
+        }
+        public void UpdateFabric(int FabricID, string FabricName)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "UPDATE Manufacture.Fabrics SET FabricName = @FabricName WHERE FabricID = @FabricID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@FabricID", FabricID);
+                cmd.Parameters.AddWithValue("@FabricName", FabricName);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+
+        }
+        public Fabrics GetFabricById(int id)
+        {
+            Fabrics fabric = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.Fabrics WHERE FabricID = @FabricID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@FabricID", id);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    fabric = new Fabrics
+                    {
+                        FabricID = Convert.ToInt32(reader["FabricID"]),
+                        FabricName = reader["FabricName"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return fabric;
+        }
+        public void DeleteFabric(int FabricID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "DELETE FROM Manufacture.Fabrics WHERE FabricID = @FabricID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@FabricID", FabricID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<Designs> GetDesign()
+        {
+            List<Designs> designList = new List<Designs>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.Designs";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    designList.Add(new Designs
+                    {
+                        DesignID = Convert.ToInt32(reader["DesignID"]),
+                        DesignType = reader["DesignType"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return designList;
+        }
+        public void AddCategory(string CategoryName, string Description)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Supply.Categories (CategoryName, Description) VALUES (@CategoryName, @Description)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@CategoryName", CategoryName);
+                cmd.Parameters.AddWithValue("@Description", Description);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<Categories> GetCategory()
+        {
+            List<Categories> categoryList = new List<Categories>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.Categories";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    categoryList.Add(new Categories
+                    {
+                        CategoryID = Convert.ToInt32(reader["CategoryID"]),
+                        CategoryName = reader["CategoryName"].ToString(),
+                        Description = reader["Description"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return categoryList;
+        }
+        public void UpdateCategory(int CategoryID, string CategoryName, string Description)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "UPDATE Supply.Categories SET CategoryName = @CategoryName, Description = @Description WHERE CategoryID = @CategoryID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@CategoryID", CategoryID);
+                cmd.Parameters.AddWithValue("@CategoryName", CategoryName);
+                cmd.Parameters.AddWithValue("@Description", Description);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void DeleteCategory(int CategoryID)
+        {
+          using(SqlConnection con = _dbHelper.GetConnection())
+            {
+                string qry= "Delete from Supply.Categories where CategoryID=@CategoryID";
+                SqlCommand cmd = new SqlCommand(qry, con);
+                cmd.Parameters.AddWithValue("@CategoryID", CategoryID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public Categories GetCategoryById(int CategoryID)
+        {
+            Categories category = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.Categories WHERE CategoryID = @CategoryID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@CategoryID", CategoryID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    category = new Categories
+                    {
+                        CategoryID = Convert.ToInt32(reader["CategoryID"]),
+                        CategoryName = reader["CategoryName"].ToString(),
+                        Description = reader["Description"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return category;
+        }
+        //public Dictionary<string, List<SelectListItem>> GetDropdownData()
+        //{
+        //    Dictionary<string, List<SelectListItem>> dropdownData = new Dictionary<string, List<SelectListItem>>();
+        //    using (SqlConnection con = _dbHelper.GetConnection())
+        //    {
+        //        string query = "SELECT FabricID, FabricName FROM Manufacture.Fabrics";
+        //        SqlCommand cmd = new SqlCommand(query, con);
+        //        con.Open();
+        //        SqlDataReader reader = cmd.ExecuteReader();
+        //        List<SelectListItem> fabricList = new List<SelectListItem>();
+        //        while (reader.Read())
+        //        {
+        //            fabricList.Add(new SelectListItem
+        //            {
+        //                Value = reader["FabricID"].ToString(),
+        //                Text = reader["FabricName"].ToString()
+        //            });
+        //        }
+        //        dropdownData.Add("Fabrics", fabricList);
+        //        con.Close();
+        //    }
+        //    return dropdownData;
+        //}
+        public void AddProductAttribute(int CategoryID, int FabricID, int DesignID, int WeaveID, int ColorID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Manufacture.ProductAttribute (CategoryID, FabricID, DesignID, WeaveID, ColorID) VALUES (@CategoryID, @FabricID, @DesignID, @WeaveID, @ColorID)";
+                SqlCommand cmd = new SqlCommand(query, con);
+              
+                cmd.Parameters.AddWithValue("@CategoryID", CategoryID);
+                cmd.Parameters.AddWithValue("@FabricID", FabricID);
+                cmd.Parameters.AddWithValue("@DesignID", DesignID);
+                cmd.Parameters.AddWithValue("@WeaveID", WeaveID);
+                cmd.Parameters.AddWithValue("@ColorID", ColorID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<ProductAttribute> GetProductAttribute()
+        {
+            List<ProductAttribute> productAttributeList = new List<ProductAttribute>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.ProductAttribute";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    productAttributeList.Add(new ProductAttribute
+                    {
+                        productAttributeid = Convert.ToInt32(reader["ProductAttributeID"]),
+                        CategoryID = Convert.ToInt32(reader["CategoryID"]),
+                        FabricID = Convert.ToInt32(reader["FabricID"]),
+                        DesignID = Convert.ToInt32(reader["DesignID"]),
+                        WeaveID = Convert.ToInt32(reader["WeaveID"]),
+                        ColorID = Convert.ToInt32(reader["ColorID"])
+                    });
+                }
+                con.Close();
+            }
+            return productAttributeList;
+        }
+        public ProductAttribute GetProductAttributeByid(int id) {
+            ProductAttribute productAttribute = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.ProductAttribute WHERE ProductAttributeID = @ProductAttributeID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductAttributeID", id);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    productAttribute = new ProductAttribute
+                    {
+                        productAttributeid = Convert.ToInt32(reader["ProductAttributeID"]),
+                        CategoryID = Convert.ToInt32(reader["CategoryID"]),
+                        FabricID = Convert.ToInt32(reader["FabricID"]),
+                        DesignID = Convert.ToInt32(reader["DesignID"]),
+                        WeaveID = Convert.ToInt32(reader["WeaveID"]),
+                        ColorID = Convert.ToInt32(reader["ColorID"])
+                    };
+                }
+                con.Close();
+            }
+            return productAttribute;
+        }
+        public void UpdateProductAttribute(int productAttributeid, int CategoryID, int FabricID, int DesignID, int WeaveID, int ColorID)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "UPDATE Manufacture.ProductAttribute SET CategoryID = @CategoryID, FabricID = @FabricID, DesignID = @DesignID, WeaveID = @WeaveID, ColorID = @ColorID WHERE ProductAttributeID = @ProductAttributeID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductAttributeID", productAttributeid);
+                cmd.Parameters.AddWithValue("@CategoryID", CategoryID);
+                cmd.Parameters.AddWithValue("@FabricID", FabricID);
+                cmd.Parameters.AddWithValue("@DesignID", DesignID);
+                cmd.Parameters.AddWithValue("@WeaveID", WeaveID);
+                cmd.Parameters.AddWithValue("@ColorID", ColorID);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void DeleteProductAttribute(int productAttributeid)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "DELETE FROM Manufacture.ProductAttribute WHERE productAttributeid = @productAttributeid";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@productAttributeid", productAttributeid);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public void AddProduction(int productAttributeid, DateTime ProductionDate, string MachineUsed, int EmployeeID, int RawMaterialID, int Quantity)
+        {
+            using (SqlConnection con =_dbHelper.GetConnection())
+            {
+                string query = "INSERT INTO Manufacture.Production (productAttributeid, ProductionDate, MachineUsed, EmployeeID, RawMaterialID, Quantity) VALUES (@productAttributeid, @ProductionDate, @MachineUsed, @EmployeeID, @RawMaterialID, @Quantity)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@productAttributeid", productAttributeid);
+                cmd.Parameters.AddWithValue("@ProductionDate", ProductionDate);
+                cmd.Parameters.AddWithValue("@MachineUsed", MachineUsed);
+                cmd.Parameters.AddWithValue("@EmployeeID", EmployeeID);
+                cmd.Parameters.AddWithValue("@RawMaterialID", RawMaterialID);
+                cmd.Parameters.AddWithValue("@Quantity", Quantity);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public List<Production> GetProduction()
+        {
+            List<Production> productionList = new List<Production>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.Production";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    productionList.Add(new Production
+                    {
+                        ProductionID = Convert.ToInt32(reader["ProductionID"]),
+                        productattributeid = Convert.ToInt32(reader["productattributeid"]),
+                        ProductionDate = Convert.ToDateTime(reader["ProductionDate"]),
+                        MachineUsed=reader["MachineUsed"].ToString(),
+                        EmployeeID = Convert.ToInt32(reader["EmployeeID"]),
+                        RawMaterialID = Convert.ToInt32(reader["RawMaterialID"]),
+                        Quantity = Convert.ToInt32(reader["Quantity"])
+                    });
+                }
+                con.Close();
+            }
+            return productionList;
+        }
+        public Production GetProductionById(int ProductionID)
+        {
+            Production production = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Manufacture.Production WHERE ProductionID = @ProductionID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductionID",ProductionID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    production = new Production
+                    {
+                        ProductionID = Convert.ToInt32(reader["ProductionID"]),
+                        productattributeid = Convert.ToInt32(reader["productattributeid"]),
+                        ProductionDate = Convert.ToDateTime(reader["ProductionDate"]),
+                        MachineUsed = reader["MachineUsed"].ToString(),
+                        EmployeeID = Convert.ToInt32(reader["EmployeeID"]),
+                        RawMaterialID = Convert.ToInt32(reader["RawMaterialID"]),
+                        Quantity = Convert.ToInt32(reader["Quantity"])
+                    };
+                }
+                con.Close();
+            }
+            return production;
+        }
+        public void UpdateProduction(int ProductionID, int productAttributeid, DateTime ProductionDate, string MachineUsed, int EmployeeID, int RawMaterialID, int Quantity)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "UPDATE Manufacture.Production SET productAttributeid = @productAttributeid, ProductionDate = @ProductionDate, MachineUsed = @MachineUsed, EmployeeID = @EmployeeID, RawMaterialID = @RawMaterialID, Quantity = @Quantity WHERE ProductionID = @ProductionID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductionID", ProductionID);
+                cmd.Parameters.AddWithValue("@productAttributeid", productAttributeid);
+                cmd.Parameters.AddWithValue("@ProductionDate", ProductionDate);
+                cmd.Parameters.AddWithValue("@MachineUsed", MachineUsed);
+                cmd.Parameters.AddWithValue("@EmployeeID", EmployeeID);
+                cmd.Parameters.AddWithValue("@RawMaterialID", RawMaterialID);
+                cmd.Parameters.AddWithValue("@Quantity", Quantity);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+        public int AddProducts(string ProductName, int ProductionID, decimal ProductRatings, decimal Price, string Description)
+        {
+            int newProductId = 0;
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = @"INSERT INTO Supply.Products (ProductName, ProductionID, ProductRatings, Price, Description)
+                         OUTPUT INSERTED.ProductID
+                         VALUES (@ProductName, @ProductionID, @ProductRatings, @Price, @Description)";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductName", ProductName);
+                cmd.Parameters.AddWithValue("@ProductionID", ProductionID);
+                cmd.Parameters.AddWithValue("@ProductRatings", ProductRatings);
+                cmd.Parameters.AddWithValue("@Price", Price);
+                cmd.Parameters.AddWithValue("@Description", Description);
+
+                con.Open();
+                newProductId = (int)cmd.ExecuteScalar();
+            }
+
+            return newProductId;
+        }
+        public List<ProductView> GetProductsWithImages()
+        {
+            List<ProductView> list = new List<ProductView>();
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("GetAllProductsWithImages", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                con.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    Products product = new Products
+                    {
+                        productid = dr["productid"] != DBNull.Value ? Convert.ToInt32(dr["productid"]) : 0,
+                        ProductName = dr["ProductName"] != DBNull.Value ? dr["ProductName"].ToString() : null,
+                        ProductionID = dr["ProductionID"] != DBNull.Value ? Convert.ToInt32(dr["ProductionID"]) : 0,
+                        ProductRatings = dr["ProductRatings"] != DBNull.Value ? Convert.ToDecimal(dr["ProductRatings"]) : 0,
+                        Price = dr["Price"] != DBNull.Value ? Convert.ToDecimal(dr["Price"]) : 0,
+                        Description = dr["Description"] != DBNull.Value ? dr["Description"].ToString() : null
+                    };
+
+                    string imagePath = dr["ImagePath"] != DBNull.Value ? dr["ImagePath"].ToString() : null;
+
+                    list.Add(new ProductView
+                    {
+                        Product = product,
+                        ImagePath = imagePath
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        public List<Products> GetProducts()
+        {
+            List<Products> productList = new List<Products>();
+            using (SqlConnection conn = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.Products";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    productList.Add(new Products
+                    {
+                        productid = reader["productid"] != DBNull.Value ? Convert.ToInt32(reader["productid"]) : 0,
+                        ProductName = reader["ProductName"] != DBNull.Value ? reader["ProductName"].ToString() : null,
+                        ProductionID = reader["ProductionID"] != DBNull.Value ? Convert.ToInt32(reader["ProductionID"]) : 0,
+                        ProductRatings = reader["ProductRatings"] != DBNull.Value ? Convert.ToDecimal(reader["ProductRatings"]) : 0,
+                        Price = reader["Price"] != DBNull.Value ? Convert.ToDecimal(reader["Price"]) : 0,
+                        Description = reader["Description"] != DBNull.Value ? reader["Description"].ToString() : null
+                    });
+                }
+                conn.Close();
+            }
+            return productList;
+        }
+        public Products GetProductsbyid(int productid)
+        {
+            Products product = null;
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = @"SELECT productid, ProductName, ProductionID, ProductRatings, Price, Description 
+                         FROM Supply.Products 
+                         WHERE productid = @productid";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@productid",productid);
+                    con.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            product = new Products
+                            {
+                                productid = Convert.ToInt32(reader["productid"]),
+                                ProductName = reader["ProductName"].ToString(),
+                                ProductionID = Convert.ToInt32(reader["ProductionID"]),
+                                ProductRatings = Convert.ToDecimal(reader["ProductRatings"]),
+                                Price = Convert.ToDecimal(reader["Price"]),
+                                Description = reader["Description"]?.ToString()
+                            };
+                        }
+                    }
+                }
+            }
+
+            return product;
+        }
+        public void UpdateProduct(int productid, string ProductName, int ProductionID, decimal ProductRatings, decimal Price, string Description)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("UpdateProduct", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@productid", productid);
+                cmd.Parameters.AddWithValue("@ProductName", ProductName);
+                cmd.Parameters.AddWithValue("@ProductionID", ProductionID);
+                cmd.Parameters.AddWithValue("@ProductRatings", ProductRatings);
+                cmd.Parameters.AddWithValue("@Price", Price);
+                cmd.Parameters.AddWithValue("@Description", Description);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public List<employees> GetEmployees()
+        {
+            List<employees> employeeList = new List<employees>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM hrm.employees";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    employeeList.Add(new employees
+                    {
+                        EmployeeID = Convert.ToInt32(reader["EmployeeID"]),
+                        Name = reader["Name"].ToString(),
+                        Password = reader["Password"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        PhoneNumber = reader["PhoneNumber"].ToString(),
+                        role_id = Convert.ToInt32(reader["role_id"]),
+                        DepartmentID = Convert.ToInt32(reader["DepartmentID"]),
+                        Salary = Convert.ToDecimal(reader["Salary"])
+           
+
+                    });
+                }
+                con.Close();
+            }
+            return employeeList;
+        }
+        public int AddProductImage(int productid, string imagePath)
+        {
+            int newImageID = 0;
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                using (SqlCommand cmd = new SqlCommand("InsertProductImage", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Input parameters
+                    cmd.Parameters.AddWithValue("@productid", productid);
+                    cmd.Parameters.AddWithValue("@ImagePath", imagePath);
+
+                    // Output parameter
+                    SqlParameter outputParam = new SqlParameter("@NewImageID", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(outputParam);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+
+
+                    if (outputParam.Value != DBNull.Value)
+                    {
+                        newImageID = Convert.ToInt32(outputParam.Value);
+                    }
+                    else
+                    {
+
+                        throw new Exception("Invalid ProductID. Insertion failed.");
+                    }
+                }
+            }
+
+            return newImageID;
+        }
+        public string? GetImagePathByProductId(int productId)
+        {
+            string? imagePath = null;
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT TOP 1 ImagePath FROM Supply.ProductImage WHERE productid = @productid";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@productid", productId);
+
+                con.Open();
+                var result = cmd.ExecuteScalar();
+                if (result != null)
+                {
+                    imagePath = result.ToString();
+                }
+            }
+
+            return imagePath;
+        }
+
+
+        public List<ProductImage>GetProductImages()
+        {
+            List<ProductImage> productImageList = new List<ProductImage>();
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.ProductImage";
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    productImageList.Add(new ProductImage
+                    {
+                        Imageid = Convert.ToInt32(reader["Imageid"]),
+                        productid = Convert.ToInt32(reader["productid"]),
+                        ImagePath = reader["ImagePath"].ToString()
+                    });
+                }
+                con.Close();
+            }
+            return productImageList;
+        }
+        public ProductImage GetProductImageById(int ImageID)
+        {
+            ProductImage productImage = null;
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Supply.ProductImage WHERE ImageID = @ImageID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ImageID", ImageID);
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    productImage = new ProductImage
+                    {
+                        Imageid = Convert.ToInt32(reader["Imageid"]),
+                        productid = Convert.ToInt32(reader["productid"]),
+                        ImagePath = reader["ImagePath"].ToString()
+                    };
+                }
+                con.Close();
+            }
+            return productImage;
+        }
+
+    }
+     
+}

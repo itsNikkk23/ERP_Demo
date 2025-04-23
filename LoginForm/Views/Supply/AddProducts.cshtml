@@ -1,0 +1,50 @@
+﻿@model LoginForm.Models.Products
+@{
+    ViewData["Title"] = "Add Product";
+}
+<link rel="stylesheet" href="~/css/from.css" />
+
+
+    <h2 class="btn btn-secondary">Add New Product</h2>
+
+    <form asp-action="AddProducts" asp-controller="Supply" method="post" enctype="multipart/form-data" class="custom-form">
+
+        <div class="form-group mb-3">
+            <label for="ProductName">Product Name</label>
+            <input type="text" name="ProductName" class="form-control" placeholder="Enter product name" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="ProductionID">Production ID</label>
+            <select name="ProductionID" class="form-control" asp-items="ViewBag.productionList" required>
+                <option value="" disabled selected>-- Select Production ID --</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="ProductRatings">Product Ratings</label>
+            <input type="number" step="0.1" name="ProductRatings" class="form-control" placeholder="e.g. 4.5" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Price">Price</label>
+            <input type="number" step="0.01" name="Price" class="form-control" placeholder="Enter price" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Description">Description</label>
+            <textarea name="Description" rows="3" class="form-control" placeholder="Enter product description"></textarea>
+        </div>
+
+        <!-- 🔽 File Upload for Product Image -->
+        <div class="form-group mb-4">
+            <label for="ProductImageFile">Upload Product Image</label>
+            <input type="file" name="ProductImageFile" class="form-control" />
+        </div>
+
+       
+            <button type="submit" class="btn btn-primary">Add Product</button>
+            <a asp-action="AddProducts" asp-controller="Supply" class="btn btn-secondary">Cancel</a>
+        
+    </form>
+

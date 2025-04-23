@@ -1,0 +1,20 @@
+﻿@model LoginForm.Models.Categories
+
+<h2>Category Form</h2>
+<link rel="stylesheet" href="/css/from.css" />
+<form asp-action="AddCategory" asp-controller="Supply" method="post" class="custom-form">
+    <!-- Hidden Field for Edit -->
+    <input type="hidden" asp-for="CategoryID" />
+
+    <div class="form-group">
+        <label>Category Name</label>
+        <input asp-for="CategoryName" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

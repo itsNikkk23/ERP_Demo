@@ -1,0 +1,28 @@
+﻿@model List<LoginForm.Models.Categories>
+
+<h2>Category List</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Category ID</th>
+            <th>Category Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.CategoryID</td>
+                <td>@category.CategoryName</td>
+                <td>@category.Description</td>
+                <td>
+                    <a asp-controller="Supply" asp-action="EditCategory" asp-route-id="@category.CategoryID" class="btn btn-warning">Edit</a>
+                    <a asp-controller="Category" asp-action="DeleteCateogry" asp-route-id="@category.CategoryID" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

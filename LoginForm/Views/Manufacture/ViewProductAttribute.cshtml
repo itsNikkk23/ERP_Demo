@@ -1,0 +1,51 @@
+﻿@model List<LoginForm.Models.ProductAttribute>
+
+@{
+    ViewData["Title"] = "View Product Attributes";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary text-center">Product Attributes</h2>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Category</th>
+                        <th>Fabric</th>
+                        <th>Design</th>
+                        <th>Weave Type</th>
+                        <th>Color</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@Model[i].CategoryID</td>
+                            <td>@Model[i].FabricID</td>
+                            <td>@Model[i].DesignID</td>
+                            <td>@Model[i].WeaveID</td>
+                            <td>@Model[i].ColorID</td>
+                            <td>
+                                <a asp-action="EditProductAttribute" asp-route-id="@Model[i].productAttributeid" class="btn btn-sm btn-warning me-2">Edit</a>
+                                <a asp-action="DeleteProductAttribute" asp-route-id="@Model[i].productAttributeid" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            No Product Attributes found.
+        </div>
+    }
+</div>

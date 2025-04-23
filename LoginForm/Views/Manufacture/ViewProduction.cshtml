@@ -1,0 +1,49 @@
+﻿@model List<LoginForm.Models.Production>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary text-center">Production</h2>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ProductionID</th>
+                        <th>Product Attribute ID</th>
+                        <th>Production Date</th>
+                        <th>Machine Used</th>
+                        <th>Employee</th>
+                        <th>Raw Material ID</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var production in Model)
+                    {
+                        <tr>
+                            <td>@production.ProductionID</td>
+                            <td>@production.productattributeid</td>
+                            <td>@production.ProductionDate.ToShortDateString()</td>
+                            <td>@production.MachineUsed</td>
+                            <td>@production.EmployeeID</td>
+                            <td>@production.RawMaterialID</td>
+                            <td>@production.Quantity</td>
+                            <td>
+                                <a asp-action="EditProduction" asp-route-id="@production.ProductionID" class="btn btn-sm btn-warning me-2">Edit</a>
+                                <a asp-action="DeleteProduction" asp-route-id="@production.ProductionID" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            No Production records found.
+        </div>
+    }
+</div>

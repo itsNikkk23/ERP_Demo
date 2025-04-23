@@ -1,0 +1,32 @@
+﻿@model List<LoginForm.Models.ProductImage>
+@{
+    ViewData["Title"] = "Product Image Gallery";
+}
+
+<h2>Product Images</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Product ID</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Imageid</td>
+                <td>@item.productid</td>
+                <td>
+                    <img src="@item.ImagePath" alt="Product Image" style="height:100px;width:auto;border:1px solid #ccc;padding:4px;" />
+                </td>
+                <td>
+                    <a asp-action="EditProduct" asp-controller="Supply" asp-route-id="@item.productid" class="btn btn-primary">Edit</a>
+                    <a asp-action="DeleteProduct" asp-controller="Supply" asp-route-id="@item.productid" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

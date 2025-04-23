@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+    <link rel="stylesheet" href="/css/from.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Manage Products</h2>
+
+        <form class="custom-form" onsubmit="event.preventDefault(); addOrUpdateProduct();">
+            <input type="hidden" id="editProductId" />
+
+            <div class="form-group mb-3">
+                <input type="text" id="productName" placeholder="Product Name" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <select id="category" class="form-control">
+                    <option value="">Select Category</option>
+                    <option value="KanjiWaram">KanjiWaram</option>
+                    <option value="Patola">Patola</option>
+                    <option value="Banarasi">Banarasi</option>
+                    <option value="Bandhani">Bandhani</option>
+                    <option value="Paithani">Paithani</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="number" id="rating" placeholder="Rating (0-5)" step="0.1" min="0" max="5" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="number" id="price" placeholder="Price" step="0.01" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Product</button>
+
+            <h2>Filter Products</h2>
+            <div class="form-group mb-3">
+                <label><input type="checkbox" name="priceFilter" value="less1000" /> Less than 1000</label>
+                <label><input type="checkbox" name="priceFilter" value="1000-50000" /> 1000 - 50000</label>
+                <label><input type="checkbox" name="priceFilter" value="50000-100000" /> 50000 - 100000</label>
+
+                <label><input type="checkbox" name="ratingFilter" value="best" /> Best (4.1 - 5.0)</label>
+                <label><input type="checkbox" name="ratingFilter" value="low" /> Less than 3.0</label>
+
+                <button type="button" onclick="filterProducts()" class="btn btn-secondary">Filter</button>
+            </div>
+        </form>
+
+        <h2>Product List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Rating</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productTable"></tbody>
+        </table>
+    </div>
+
+    <script src="/js/JavaScriptExample.js"></script>
+</body>
+</html>

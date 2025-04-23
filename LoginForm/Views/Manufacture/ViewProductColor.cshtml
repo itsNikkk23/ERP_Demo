@@ -1,0 +1,27 @@
+﻿@model List<LoginForm.Models.ProductColor>
+@{
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Color ID</th>
+            <th>Color Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var color in Model)
+        {
+            <tr>
+                <td>@color.ColorID</td>
+                <td>@color.ColorName</td>
+                <td>
+                    <a asp-controller="Manufacture" asp-action="EditColor" asp-route-id="@color.ColorID" class="btn btn-primary">Edit</a>
+                    <form asp-controller="Manufacture" asp-action="DelColor" asp-route-id="@color.ColorID" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this color?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

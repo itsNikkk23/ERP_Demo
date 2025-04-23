@@ -1,0 +1,31 @@
+﻿@model List<LoginForm.Models.roles>
+
+<a asp-action="AddRole" class="btn btn-primary">Add New Role</a>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>RoleID</th>
+            <th>Roll Name</th>
+            <th>Action</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var roles in Model)
+        {
+            <tr>
+                <td>@roles.role_id</td>
+                <td>@roles.role_name</td>
+
+
+                <td>
+                    <a asp-action="UpdateEmp" asp-route-id="@roles.role_id">Edit</a> |
+
+                    <a asp-action="DeleteEmp" asp-route-id="@roles.role_id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

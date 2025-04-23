@@ -1,0 +1,177 @@
+﻿@* AdminPanel.cshtml Layout *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar -->
+        <div class="bg-gray-900 text-white w-full md:w-64 min-h-screen overflow-y-auto fixed">
+            <div class="flex items-center justify-center h-16 border-b border-gray-800">
+                <img src="https://storage.googleapis.com/a1aa/image/kaZnImMwEwVyj1Br4D84VKEpHwTdxx98uUckZILpDFw.jpg" alt="Logo" class="h-8 w-8 mr-2" />
+                <span class="text-xl font-semibold">ADMIN PANEL</span>
+            </div>
+            <nav class="mt-4">
+                <!-- Dynamic Menu List -->
+                <div class="flex flex-col px-4 text-sm space-y-1">
+                    @switch (@Context.Session.GetString("role"))
+                    {
+                        case "1":
+                            <a asp-controller="AdminHome" asp-action="Home" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-industry"></i> Dashboard</a>
+                            <a asp-controller="AdminHome" asp-action="DispHandlooms" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-industry"></i> HandLoom</a>
+                           @*  <a asp-controller="AdminHome" asp-action="BulkPurchase" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-tags"></i> Orders</a>
+                            <a asp-controller="Products" asp-action="DisplayProducts" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Products</a> *@
+
+                            <hr class="border-gray-700 my-2" />
+
+                            <a asp-controller="AdminHome" asp-action="DispCustomers" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Customers</a>
+
+                            <hr class="border-gray-700 my-2" />
+                            <h2 class="text-gray-400 px-3 py-2 text-sm font-medium">Admin Handle</h2>
+                            <a asp-controller="employee" asp-action="Index" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Employees</a>
+                            <a asp-controller="employee" asp-action="DisplayDept" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Departments</a>
+                            <a asp-controller="employee" asp-action="DisplayRole" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Roles</a>
+
+                            <hr class="border-gray-700 my-2" />
+
+                            <a asp-controller="EmpServices" asp-action="DispFaq" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> FAQ's</a>
+                            <a asp-controller="EmpServices" asp-action="AddLeaveRequests" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Apply Leave</a>
+                            <a asp-controller="EmpServices" asp-action="DisplayLeaveRequests" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Leave Requests</a>
+                            <a asp-controller="EmpServices" asp-action="GetTodayAttendence" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Attendence</a>
+                            <a asp-controller="EmpServices" asp-action="PunchHistory" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> PunchHistory</a>
+                            <a asp-controller="EmpServices" asp-action="Payroll" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Payroll</a>
+
+                            <hr class="border-gray-700 my-2" />
+                            <a asp-controller="Login" asp-action="AddCampaign" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-right-from-bracket"></i> Add Campaign</a>
+                            <a asp-controller="Login" asp-action="DispCampaign" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-right-from-bracket"></i> Display Campaign</a>
+
+                            <hr class="border-gray-700 my-2" />
+
+                            <a asp-controller="Login" asp-action="Login" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                            break;
+                        case "2":
+                            <a asp-controller="AdminHome" asp-action="Home" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-industry"></i> Dashboard</a>
+                            <a asp-controller="Orders" asp-action="Display" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-tags"></i> Orders</a>
+                            <a asp-controller="Stores" asp-action="DisplayStores" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-box"></i> Stores</a>
+                            <a asp-controller="Products" asp-action="DisplayProducts" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Products</a>
+
+                            <hr class="border-gray-700 my-2" />
+
+                            <a asp-controller="Customers" asp-action="DisplayCustomers" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Customers</a>
+
+                            <hr class="border-gray-700 my-2" />
+                            <a asp-controller="Login" asp-action="Login" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                            break;
+                        case "3":
+                            <a asp-controller="Supply" asp-action="Products" class="py-2 px-3 rounded hover:bg-gray-700">Products</a>
+                            <a asp-controller="Manufacture" asp-action="AddRawMaterials" class="py-2 px-3 rounded hover:bg-gray-700">AddRawMaterial</a>
+                            <a asp-controller="Manufacture" asp-action="ViewRawMaterials" class="py-2 px-3 rounded hover:bg-gray-700">CheckMaterial</a>
+                            <a asp-controller="Supply" asp-action="AddSuppliers" class="py-2 px-3 rounded hover:bg-gray-700">AddSuppliers</a>
+                            <a asp-controller="Supply" asp-action="Suppliers" class="py-2 px-3 rounded hover:bg-gray-700">ViewSuppliers</a>
+                            <a asp-controller="Manufacture" asp-action="AddWeaving" class="py-2 px-3 rounded hover:bg-gray-700">AddWeaving</a>
+                            <a asp-controller="Manufacture" asp-action="WeaveProcess" class="py-2 px-3 rounded hover:bg-gray-700">ViewWeaving</a>
+                            <a asp-controller="Manufacture" asp-action="AddProductColor" class="py-2 px-3 rounded hover:bg-gray-700">AddProductColor</a>
+                            <a asp-controller="Manufacture" asp-action="ViewProductColor" class="py-2 px-3 rounded hover:bg-gray-700">ViewProductColor</a>
+                            <a asp-controller="Manufacture" asp-action="AddFabrics" class="py-2 px-3 rounded hover:bg-gray-700">AddFabrics</a>
+                            <a asp-controller="Manufacture" asp-action="ViewFabrics" class="py-2 px-3 rounded hover:bg-gray-700">Fabrics</a>
+                            <a asp-controller="Manufacture" asp-action="AddProductAttribute" class="py-2 px-3 rounded hover:bg-gray-700">AddAttributes</a>
+                            <a asp-controller="Manufacture" asp-action="ViewProductAttribute" class="py-2 px-3 rounded hover:bg-gray-700">ProductAttributes</a>
+                            <a asp-controller="Manufacture" asp-action="AddProduction" class="py-2 px-3 rounded hover:bg-gray-700">AddProduction</a>
+                            <a asp-controller="Manufacture" asp-action="ViewProduction" class="py-2 px-3 rounded hover:bg-gray-700">ViewProduction</a>
+                            <a asp-controller="Supply" asp-action="AddImage" class="py-2 px-3 rounded hover:bg-gray-700">AddImage</a>
+                            <a asp-controller="Supply" asp-action="ViewImage" class="py-2 px-3 rounded hover:bg-gray-700">ViewImage</a>
+                            <a asp-controller="Supply" asp-action="AddProducts" class="py-2 px-3 rounded hover:bg-gray-700">AddProducts</a>
+                            <a asp-controller="Supply" asp-action="ViewProducts" class="py-2 px-3 rounded hover:bg-gray-700">ViewProducts</a>
+                            <a asp-controller="Supply" asp-action="AddCategory" class="py-2 px-3 rounded hover:bg-gray-700">AddCategory</a>
+                            <a asp-controller="Supply" asp-action="DisplayCategory" class="py-2 px-3 rounded hover:bg-gray-700">ViewCategory</a>
+                            <a asp-controller="Manufacture" asp-action="AddPurchaseOrder" class="py-2 px-3 rounded hover:bg-gray-700">AddPurchaseOrder</a>
+                            <a asp-controller="Manufacture" asp-action="ViewPurchaseOrders" class="py-2 px-3 rounded hover:bg-gray-700">ViewPurchases</a>
+                            break;
+                        default:
+                            break;
+                    }
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col md:ml-64 overflow-y-auto">
+            <!-- Top Bar -->
+            <div class="flex items-center justify-between bg-white p-4 border-b border-gray-200">
+                <div class="flex items-center">
+                    <button class="text-gray-500 focus:outline-none lg:hidden" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="relative mx-4 lg:mx-0">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                            <i class="fas fa-search text-gray-500"></i>
+                        </span>
+                        <input class="form-input w-32 sm:w-64 rounded-md pl-10 pr-4 focus:border-indigo-600" type="text" placeholder="Search..." />
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="text-gray-500 focus:outline-none mx-4">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                    </button>
+                    <button class="text-gray-500 focus:outline-none mx-4">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <button class="text-gray-500 focus:outline-none mx-4">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <!-- Profile Dropdown -->
+                    <div class="relative dropdown">
+                        <button class="dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="relative block h-8 w-8 rounded-full overflow-hidden shadow focus:outline-none">
+                                <img class="h-full w-full object-cover" src="https://storage.googleapis.com/a1aa/image/VuTlrZDufT9ZF6TGIk5K5elfU7PojJLmkW15jXfnUhQ.jpg" alt="Avatar" />
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">User</a></li>
+                            <li><a class="dropdown-item" href="#">Admin</a></li>
+                            <li><a asp-controller="Login" asp-action="Login" class="dropdown-item">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Body -->
+            <div class="p-6 overflow-y-auto">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Adjust sidebar height based on main content -->
+    <script>
+        window.addEventListener('resize', adjustSidebarHeight);
+        window.addEventListener('load', adjustSidebarHeight);
+
+        function adjustSidebarHeight() {
+            const mainContent = document.querySelector('.flex-1');
+            const sidebar = document.querySelector('.bg-gray-900');
+            if (mainContent && sidebar) {
+                sidebar.style.height = mainContent.scrollHeight + 'px';
+            }
+        }
+
+        // Add toggle functionality for mobile
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.querySelector('.bg-gray-900').classList.toggle('hidden-mobile');
+        });
+    </script>
+</body>
+</html>

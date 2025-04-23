@@ -1,0 +1,110 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Apply For Leave</title>
+   @*  <script>
+        // Event Functions
+
+        // On page load
+        window.onload = function () {
+            alert("Welcome to the Leave Application Page!");
+        };
+
+        // On focus and blur events for Start Date
+        function highlightField(event) {
+            event.target.style.backgroundColor = "lightyellow";
+        }
+        function removeHighlight(event) {
+            event.target.style.backgroundColor = "";
+        }
+
+        // Validate Leave Type selection
+        function validateLeaveType() {
+            const leaveType = document.getElementById("LeaveType");
+            if (leaveType.value === "") {
+                alert("Please select a valid leave type!");
+            }
+        }
+
+        // Form submission event
+        function onFormSubmit(event) {
+            event.preventDefault(); // Prevent form from submitting
+            const startDate = document.querySelector("input[name='StartDate']").value;
+            const endDate = document.querySelector("input[name='EndDate']").value;
+
+            if (!startDate || !endDate) {
+                alert("Please fill in both Start Date and End Date!");
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert("Start Date cannot be later than End Date!");
+                return;
+            }
+
+            alert("Form submitted successfully!");
+            // Proceed with form submission (uncomment below line in production)
+            // event.target.submit();
+        }
+
+        // On hover event for the submit button
+        function onHoverSubmitButton(event) {
+            event.target.style.backgroundColor = "green";
+            event.target.style.color = "white";
+        }
+
+        function onLeaveSubmitButton(event) {
+            event.target.style.backgroundColor = "";
+            event.target.style.color = "black";
+        }
+
+        // Change event for Leave Type
+        function leaveTypeChanged(event) {
+            console.log("Leave type selected: " + event.target.value);
+        }
+    </script> *@
+</head>
+<body>
+    <div class="col-md-8">
+        <div class="card p-4 shadow-lg">
+            <h2 style="color:black;font-family: 'Arial Narrow Bold'">Apply For Leave</h2>
+            <hr />
+            <form asp-action="AddLeaveRequests" method="post" >
+                <div class="mb-3">
+                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Employee</h3>
+                    <label>@Context.Session.GetString("Email")</label>
+                </div>
+                <div class="role-dropdown">
+                    <i class="fas fa-users"></i>
+                    <select id="LeaveType" name="LeaveType" class="form-select" onchange="leaveTypeChanged(event)" onblur="validateLeaveType()">
+                        <option value="" selected>Select Leave Type</option>
+                        <option value="casual">casual</option>
+                        <option value="sick">sick</option>
+                        <option value="annual">annual</option>
+                        <option value="Bereavement">Bereavement</option>
+                        <option value="Paternity">Paternity</option>
+                        <option value="Maternity">Maternity</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Start Date</h3>
+                    <input type="datetime-local" name="StartDate" value="" onfocus="highlightField(event)" onblur="removeHighlight(event)" />
+                </div>
+                <div class="mb-3">
+                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">End Date</h3>
+                    <input type="datetime-local" name="EndDate" value="" onfocus="highlightField(event)" onblur="removeHighlight(event)" />
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit"
+                            class="btn btn-outline-success"
+                            asp-action="AddLeaveRequests"
+                            onmouseover="onHoverSubmitButton(event)"
+                            onmouseout="onLeaveSubmitButton(event)">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+﻿@model List<LoginForm.Models.employee_attendence>
+
+
+<table class="table table-bordered table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>ShiftStart</th>
+            <th>ShiftEnd</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee_Attendence in Model)
+        {
+            <tr>
+                <td>@employee_Attendence.Date.ToString("dd-MM-yyyy")</td>
+                <td>@employee_Attendence.Status</td>
+                <td>@employee_Attendence.ShiftStart</td>
+                <td>@employee_Attendence.ShiftEnd</td>
+               
+            </tr>
+        }
+    </tbody>
+</table>

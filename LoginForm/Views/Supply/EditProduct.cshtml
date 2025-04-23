@@ -1,0 +1,58 @@
+﻿@model LoginForm.Models.ProductView
+@{
+    ViewData["Title"] = "Edit Product";
+}
+<link rel="stylesheet" href="~/css/from.css" />
+
+<h2 class="btn btn-secondary">Edit Product</h2>
+
+<form asp-action="EditProduct" asp-controller="Supply" method="post" enctype="multipart/form-data" class="custom-form">
+    <input type="hidden" asp-for="Product.productid" />
+
+    <div class="form-group">
+        <label for="ProductName">Product Name</label>
+        <input type="text" asp-for="Product.ProductName" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ProductionID">Production ID</label>
+        <select asp-for="Product.ProductionID" class="form-control" asp-items="ViewBag.productionList" required>
+            <option value="" disabled>-- Select Production ID --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="ProductRatings">Product Ratings</label>
+        <input type="number" step="0.1" asp-for="Product.ProductRatings" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Price">Price</label>
+        <input type="number" step="0.01" asp-for="Product.Price" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea asp-for="Product.Description" rows="3" class="form-control"></textarea>
+    </div>
+
+    
+        <label>Current Image</label><br />
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <img src="@Model.ImagePath" alt="Product Image" style="height:100px;width:auto;" />
+        }
+        else
+        {
+            <p>No image available.</p>
+        }
+    
+
+    <div class="form-group mb-4">
+        <label for="ProductImageFile">Upload New Image (optional)</label>
+        <input type="file" name="ProductImageFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Product</button>
+    <a asp-action="ViewProducts" class="btn btn-secondary">Cancel</a>
+</form>

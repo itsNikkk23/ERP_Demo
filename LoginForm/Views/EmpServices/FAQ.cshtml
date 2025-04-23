@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "FAQ";
+}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="col-md-8">
+        <div class="card p-4 shadow-lg">
+            <h2 style="color:black;font-family: 'Arial Narrow Bold'">Add FAQ's'</h2>
+            <hr />
+            <form asp-action="FAQ" method="post">
+                <div class="mb-3">
+                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Questions </h3>
+                    <input type="text" class="form-control" placeholder="Enter Question" name="Questions">
+                </div>
+                <div class="mb-3">
+                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Answser </h3>
+                    <textarea rows="3" cols="70" placeholder="Add Your Anwser Of Above Question" name="Answers"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-outline-success" asp-action="FAQ">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

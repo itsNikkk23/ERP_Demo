@@ -1,0 +1,16 @@
+﻿@model LoginForm.Models.ProductColor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<link rel="stylesheet" href="/css/from.css">
+<div class="form-container">
+    <h2>@ViewData["Title"]</h2>
+    <form asp-controller="Manufacture" asp-action="AddProductColor" method="post" class="custom-from">
+        <label for="ColorName" class="form-control">Color Name:</label>
+        <input type="text" id="ColorName" name="ColorName" class="form-control" required>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

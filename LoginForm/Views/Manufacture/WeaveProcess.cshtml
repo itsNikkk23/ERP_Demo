@@ -1,0 +1,34 @@
+﻿@model List<LoginForm.Models.Weaving_process>
+
+@{
+    ViewData["Title"] = "Weaving Process";
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Weave ID</th>
+            <th>Weave Type</th>
+            <th>Loom Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var weave in Model)
+        {
+            <tr>
+                <td>@weave.WeaveID</td>
+                <td>@weave.weave_type</td>
+                <td>@weave.loomType</td>
+                <td>
+                    <a asp-controller="Manufacture" asp-action="EditWeave" asp-route-id="@weave.WeaveID" class="btn btn-primary">Edit</a>
+                    <form asp-controller="Manufacture" asp-action="DeleteWeave" asp-route-id="@weave.WeaveID" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this weaving process?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-controller="Manufacture" asp-action="AddWeaving" class="btn btn-success">Add New Weave</a>

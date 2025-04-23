@@ -1,0 +1,27 @@
+﻿@model LoginForm.Models.RawMaterials
+
+<form asp-controller="Manufacture" asp-action="EditRawMaterials" method="post">
+    <input type="hidden" asp-for="RawMaterialID" /> <!-- Hidden ID -->
+
+    <div class="form-group">
+        <label>Material Name</label>
+        <input type="text" asp-for="MaterialName" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Material Type</label>
+        <input type="text" asp-for="MaterialType" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Unit of Measure</label>
+        <input type="number" asp-for="UnitOfMeasure" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Update</button>
+</form>

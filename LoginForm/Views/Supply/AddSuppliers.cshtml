@@ -1,0 +1,24 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model LoginForm.Models.Suppliers
+<link rel="stylesheet" href="/css/from.css" />
+<div class="container mt-4">
+    <h2 class="text-primary">Add New Supplier</h2>
+    <form asp-controller="Supply" asp-action="AddSuppliers" method="post">
+        <div class="form-group">
+            <label for="SupplierName">Supplier Name:</label>
+            <input type="text" id="SupplierName" name="SupplierName" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="SupplierContact">Supplier Contact:</label>
+            <input type="text" id="SupplierContact" name="SupplierContact" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">Save Supplier</button>
+        <a asp-action="ViewSuppliers" class="btn btn-secondary mt-2">Cancel</a>
+    </form>
+</div>

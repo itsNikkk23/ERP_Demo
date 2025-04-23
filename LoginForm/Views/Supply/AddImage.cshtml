@@ -1,0 +1,27 @@
+﻿@model LoginForm.Models.ProductImage
+@{
+    ViewData["Title"] = "Add Product Image";
+    var products = ViewBag.Products as List<Products>;
+}
+
+<h2>Add Product Image</h2>
+
+<form asp-action="AddImage" method="post" enctype="multipart/form-data" class="custom-form">
+    <div class="form-group">
+        <label asp-for="productid">Select Product</label>
+        <select asp-for="productid" class="form-control">
+            <option value="">-- Select Product --</option>
+            @foreach (var item in products)
+            {
+                <option value="@item.productid">@item.ProductName</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="ImageFile">Upload Image</label>
+        <input type="file" name="ImageFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

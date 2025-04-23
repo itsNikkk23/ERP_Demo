@@ -1,0 +1,40 @@
+﻿@model LoginForm.Models.ProductAttribute
+
+@{
+    ViewData["Title"] = "Edit Product Attribute";
+}
+
+<h2>Edit Product Attribute</h2>
+<link rel="stylesheet" href="~/css/from.css" />
+
+<form asp-action="EditAttribute" asp-controller="Product" asp-route-id="@Model.productAttributeid" method="post">
+    <input type="hidden" asp-for="productAttributeid" class="custom-form"/>
+
+    <div class="form-group">
+        <label for="CategoryID">Category</label>
+        <select asp-for="CategoryID" asp-items="ViewBag.categoryList" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label for="FabricID">Fabric</label>
+        <select asp-for="FabricID" asp-items="ViewBag.fabricList" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label for="DesignID">Design</label>
+        <select asp-for="DesignID" asp-items="ViewBag.designList" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label for="WeaveID">Weaving</label>
+        <select asp-for="WeaveID" asp-items="ViewBag.weavingList" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label for="ColorID">Color</label>
+        <select asp-for="ColorID" asp-items="ViewBag.colorList" class="form-control"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="ViewProductAttribute" class="btn btn-secondary">Cancel</a>
+</form>

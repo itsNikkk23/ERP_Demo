@@ -1,0 +1,15 @@
+﻿@model List<LoginForm.Models.campaign>
+
+@foreach (var campaign in Model)
+{
+    <div style="text-align: center; margin-bottom: 20px;">
+        @if (campaign.campaignIMG != null)
+        {
+            <img src="data:image/png;base64,@Convert.ToBase64String(campaign.campaignIMG)" style="width: 100%; max-width: 1200px; height:auto;" alt="Campaign Banner" />
+        }
+        else
+        {
+            <p>No profile Img</p>
+        }
+    </div>
+}

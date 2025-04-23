@@ -1,0 +1,38 @@
+﻿@model LoginForm.Models.Handloom
+
+<h1>Update</h1>
+
+<h4>employee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="UpdateHandloom" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="handloomID" />
+            <div class="form-group">
+                <label asp-for="handloomname" class="control-label"></label>
+                <input asp-for="handloomname" class="form-control" />
+                <span asp-validation-for="handloomname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LOC" class="control-label"></label>
+                <input asp-for="LOC" class="form-control" type="text" />
+                <span asp-validation-for="LOC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary" />
+            </div>
+        </form>
+
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+
+

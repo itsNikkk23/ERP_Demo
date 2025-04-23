@@ -1,0 +1,45 @@
+﻿@model LoginForm.Models.PurchaseOrders
+
+@{
+    ViewData["Title"] = "Add Purchase Order";
+}
+<link rel="stylesheet" href="/css/from.css">
+<h2>Add Purchase Order</h2>
+
+
+<form asp-action="AddPurchaseOrder" asp-controller="Manufacture" method="post" class="custom-form">
+    <div class="form-group">
+        <label for="SupplierID">Supplier</label>
+        <select asp-for="SupplierID" asp-items="ViewBag.SupplierList" class="form-control">
+            <option value="">-- Select Supplier --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="OrderDate">Order Date</label>
+        <input asp-for="OrderDate" type="date" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="DeliveryDate">Delivery Date</label>
+        <input asp-for="DeliveryDate" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="TotalAmount">Total Amount</label>
+        <input asp-for="TotalAmount" type="number" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Status">Status</label>
+        <select asp-for="Status" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a asp-action="ViewPurchaseOrders" class="btn btn-secondary">Cancel</a>
+</form>

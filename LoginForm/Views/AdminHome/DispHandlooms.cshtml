@@ -1,0 +1,29 @@
+﻿@model List<LoginForm.Models.Handloom>
+
+<a asp-action="AddHandloom" class="btn btn-primary">Add Handloom</a>
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Handloom ID</th>
+            <th>Handloom Name</th>
+            <th>LOC</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var HL in Model)
+        {
+            <tr>
+                <td>@HL.handloomID</td>
+                <td>@HL.handloomname</td>
+                <td>@HL.LOC</td>
+               
+                <td>
+                    <a asp-action="UpdateHandloom" asp-route-id="@HL.handloomID">Edit</a> |
+
+                    <a asp-action="DeleteHandloom" asp-route-id="@HL.handloomID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

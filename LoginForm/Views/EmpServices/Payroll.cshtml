@@ -1,0 +1,30 @@
+﻿<h1>Salary Payment</h1>
+<div class="row">
+    <div class="col">
+        <input type="search" name="EmployeeID" value="" />
+        <button asp-action="">Search</button>
+    </div>
+   
+</div>
+<br />
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Payyroll ID</th>
+            <th>Employee ID</th>
+            <th>Amount</th>
+            <th>Paydate</th>
+            <th>Status</th>
+           
+        </tr>
+    </thead>
+    <tbody id="payrolltable">
+        <tr>
+            <td>1</td>
+            <td>Mr.bean</td>
+            <td>55000</td>   @* payroll = salary - leave(perday salary * no of leave days) based on leave type : 10 leave per year are non paid  *@
+            <td>13-03-2025:12:04:06 </td>
+            <td><input type="button" class="btn btn-success" value="paid" readonly ></input></td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,61 @@
+﻿@model List<LoginForm.Models.leave_requests>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Request Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+   
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>LeaveID</th>
+                <th>EmployeeID</th>
+                <th>LeaveType</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Status</th>
+                <th>Applied at</th>
+                <th>Action</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+           
+            @foreach (var leave_Requests in Model)
+            {
+                <tr>
+                    <td>@leave_Requests.LeaveID</td>
+                    <td>@leave_Requests.EmployeeID</td>
+                    <td>@leave_Requests.LeaveType</td>
+                    <td>@leave_Requests.StartDate</td>
+                    <td>@leave_Requests.EndDate</td>
+                    <td>@leave_Requests.Status</td>
+                    <td>@leave_Requests.Applied_at</td>
+
+                    <td>
+
+                        <form asp-action="UpdateLeaveRequests" method="post">
+                            <input type="hidden" name="LeaveID" value="@leave_Requests.LeaveID" />
+                            <input type="hidden" name="EmployeeID" value="@leave_Requests.EmployeeID" />
+                           
+                            
+                            <button type="submit" name="Status" value="Accepted"  class="btn btn-success">Accept</button>
+                            <button type="submit" name="Status" value="Rejected" class="btn btn-danger">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+﻿@model LoginForm.Models.Categories
+@{
+}
+<form asp-action="EditCategory" asp-controller="Supply" method="post">
+    <!-- Hidden Field for Edit -->
+    <input type="hidden" asp-for="CategoryID" />
+
+    <div class="form-group">
+        <label>Category Name</label>
+        <input asp-for="CategoryName" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

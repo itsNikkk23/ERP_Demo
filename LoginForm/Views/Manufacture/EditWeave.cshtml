@@ -1,0 +1,29 @@
+﻿@model LoginForm.Models.Weaving_process
+
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="/css/form.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>@ViewData["Title"]</h2>
+        <form asp-action="EditWeave" asp-controller="Manufacture" method="post">
+            <input type="hidden" asp-for="WeaveID" /> <!-- Hidden ID -->
+            <label asp-for="weave_type">Weave Type:</label>
+            <input asp-for="weave_type" class="form-control" required>
+
+            <label asp-for="loomType">Loom Type:</label>
+            <input asp-for="loomType" class="form-control" required>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">Canel</button>
+        </form>
+    </div>
+</body>
+</html>

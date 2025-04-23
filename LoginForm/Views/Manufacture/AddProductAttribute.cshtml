@@ -1,0 +1,50 @@
+﻿@model LoginForm.Models.ProductAttribute
+@{
+    ViewData["Title"] = "Add Product Attribute";
+}
+<link rel="stylesheet" href="~/css/from.css" />
+<div class="form-container">
+    <h2 class="form-heading">Add Product Attribute</h2>
+
+    <form asp-action="AddProductAttribute" asp-controller="Manufacture" method="post" class="custom-form">
+        <div class="form-group">
+            <label for="CategoryID">Category</label>
+            <select name="CategoryID" class="form-control" asp-items="ViewBag.categoryList" required>
+                <option value="" disabled selected>-- Select Category --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="FabricID">Fabric</label>
+            <select name="FabricID" class="form-control" asp-items="ViewBag.fabricList" required>
+                <option value="" disabled selected>-- Select Fabric --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="DesignID">Design</label>
+            <select name="DesignID" class="form-control" asp-items="ViewBag.designList" required>
+                <option value="" disabled selected>-- Select Design --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="WeaveID">Weave Type</label>
+            <select name="WeaveID" class="form-control" asp-items="ViewBag.weavingList" required>
+                <option value="" disabled selected>-- Select Weave Type --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ColorID">Color</label>
+            <select name="ColorID" class="form-control" asp-items="ViewBag.colorList" required>
+                <option value="" disabled selected>-- Select Color --</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add Attribute</button>
+            <a asp-action="ViewProductAttribute" asp-controller="Manufacture" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
