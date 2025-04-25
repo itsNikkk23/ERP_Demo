@@ -1,30 +1,59 @@
-﻿<h1>Salary Payment</h1>
-<div class="row">
-    <div class="col">
-        <input type="search" name="EmployeeID" value="" />
-        <button asp-action="">Search</button>
-    </div>
-   
-</div>
-<br />
-<table class="table table-bordered table-striped table-hover">
-    <thead class="table-dark">
+﻿@model List<ERP.Models.PayableSalaryViewModel>
+
+@{
+    ViewBag.Title = "Monthly Payroll";
+}
+
+<h2>Monthly Payroll</h2>
+
+<form method="post" asp-action="PayAll">
+    <button type="submit" class="btn btn-success mb-3">Pay All Salaries</button>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
         <tr>
-            <th>Payyroll ID</th>
             <th>Employee ID</th>
-            <th>Amount</th>
-            <th>Paydate</th>
+            <th>Name</th>
+            <th>Monthly Salary</th>
+            <th>Present Days</th>
+            <th>Total Days</th>
+            <th>Payable Amount</th>
             <th>Status</th>
-           
+            <th>Action</th>
         </tr>
     </thead>
-    <tbody id="payrolltable">
-        <tr>
-            <td>1</td>
-            <td>Mr.bean</td>
-            <td>55000</td>   @* payroll = salary - leave(perday salary * no of leave days) based on leave type : 10 leave per year are non paid  *@
-            <td>13-03-2025:12:04:06 </td>
-            <td><input type="button" class="btn btn-success" value="paid" readonly ></input></td>
-        </tr>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.EmployeeID</td>
+                <td>@emp.Name</td>
+                <td>@emp.MonthlySalary</td>
+                <td>@emp.PresentDays</td>
+                <td>@emp.TotalDaysInMonth</td>
+                <td>@emp.PayableAmount</td>
+                <td>
+                    @if (emp.IsPaid)
+                    {
+                        <span class="badge bg-success">Paid</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Unpaid</span>
+                    }
+                </td>
+                <td>
+                    @if (!emp.IsPaid)
+                    {
+                        <form method="post" asp-action="PayEmployee">
+                            <input type="hidden" name="id" value="@emp.EmployeeID" />
+                            <input type="hidden" name="amount" value="@emp.PayableAmount" />
+                            <button type="submit" class="btn btn-primary btn-sm">Pay</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

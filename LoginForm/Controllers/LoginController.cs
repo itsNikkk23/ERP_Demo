@@ -85,7 +85,6 @@ namespace LoginForm.Controllers
                     campaignIMG.CopyToAsync(memoryStream);
                     campaignIMG1 = memoryStream.ToArray();
                    
-
                 }
             }
             bool res = _repositories.AddCampaign(cam, campaignIMG1);

@@ -51,6 +51,11 @@ namespace LoginForm.Controllers
             var roles = _repositories.GetRoles();
             return View(roles);
         }
+        public IActionResult DeleteDept(int id)
+        {
+            _repositories.DeleteDept(id);
+            return RedirectToAction("DisplayDept");
+        }
 
         public IActionResult AddRole()
         {
@@ -77,10 +82,16 @@ namespace LoginForm.Controllers
             
             return View();
         }
+        public IActionResult DeleteRole(int id)
+        {
+            _repositories.DeleteRole(id);
+            return RedirectToAction("DisplayRole");
+        }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            var employees = _repositories.GetAllEmployees();
+             var employees = _repositories.GetAllEmployees(); // example
             return View(employees);
         }
 
@@ -94,36 +105,7 @@ namespace LoginForm.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEmp(employees employees, IFormFile profileimg)
         {
-            /*  byte[] profileimg1 = null;
-              if (profileimg != null && profileimg.Length > 0)
-              {
-                  using (var memoryStream = new MemoryStream())
-                  {
-                      profileimg.CopyToAsync(memoryStream);
-                      profileimg1 = memoryStream.ToArray();
-                      employees.contenttype = profileimg.ContentType;
-                  }
-              }
-              //  if (ModelState.IsValid)
-              // {
-
-              string hobby = employees.Hobbies != null ? string.Join(",", employees.Hobbies) : "";
-              bool res = _repositories.AddEmp(employees, hobby, profileimg1);
-              if (res)
-              {
-                  return RedirectToAction("Index");
-              }
-              // return View(stud);
-
-              // }
-              Console.WriteLine("Model validation failed:");
-              foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-              {
-                  Console.WriteLine(error.ErrorMessage);
-              }
-              ViewBag.department = _repositories.GetDept();
-              ViewBag.course = _repositories.GetRoles();
-              return View(employees);*/
+            
 
             byte[] profileimg1 = null;
             if (profileimg != null && profileimg.Length > 0)

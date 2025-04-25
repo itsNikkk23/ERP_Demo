@@ -1,4 +1,5 @@
 ﻿
+using ERP.Models;
 using LoginForm.Data;
 using LoginForm.Models;
 using Microsoft.Data.SqlClient;
@@ -14,10 +15,13 @@ namespace LoginForm.Repositories
         bool AddDept(departments departments);
         IEnumerable<departments> GetDept();
 
+        bool DeleteDept(int id);
+
         bool AddRole(roles roles);
 
         IEnumerable<roles> GetRoles();
 
+        bool DeleteRole(int id);
         bool AddEmp(employees employees, string selectedHobbies, byte[] profileimg);
         bool UpdateEmp(employees employees, string selectedHobbies, byte[] profileimg);
         bool DeleteEmp(int id);
@@ -73,6 +77,14 @@ namespace LoginForm.Repositories
         bool DeleteCustomers(int id);
 
         List<Customer> DispCustomers();
+
+        // Employee Salary Payout
+
+        public List<PayableSalaryViewModel> GetMonthlyPayrollData();
+        public void PayEmployeeSalary(int employeeId, decimal amount);
+        public void PayAllSalaries();
+
+
 
     }
 }

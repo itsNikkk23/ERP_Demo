@@ -12,7 +12,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<DbHelper>();
 builder.Services.AddScoped<IEmployeeRepositories, EmployeeRepositories>();
 builder.Services.AddScoped<IERPRepository, ERPRepository>();
+builder.Services.AddSession(options =>
+{
+    //options.IdleTimeout = TimeSpan.FromHours(1); // Session expires after 1 hour of inactivity
+    options.IdleTimeout = TimeSpan.FromDays(2); // 
+    //options.IdleTimeout = TimeSpan.FromMinutes(1);
 
+
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
@@ -40,3 +49,7 @@ app.MapControllerRoute(
     pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();
+
+///
+
+

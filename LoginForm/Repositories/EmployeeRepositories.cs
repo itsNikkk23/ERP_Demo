@@ -1,4 +1,5 @@
 ﻿
+using ERP.Models;
 using LoginForm.Data;
 using LoginForm.Models;
 using LoginForm.Repositories;
@@ -19,20 +20,7 @@ namespace ADO_CRUD.Repositories
         }
         public bool Login(string Email, string Password)
         {
-            /*using (SqlConnection con = _dbHelper.GetConnection())
-             {
-                SqlCommand cmd = new SqlCommand("SELECT Email,Password FROM employee WHERE Email = @Email AND Password = @Password", con);
-                cmd.Parameters.AddWithValue("@Email", Email);
-                cmd.Parameters.AddWithValue("@Password", Password);
-
-
-                con.Open();
-               
-                int rows = cmd.ExecuteNonQuery();
-                con.Close();
-
-                returnrows > 0;
-            }*/
+           
 
             using (SqlConnection con = _dbHelper.GetConnection())
             {
@@ -93,6 +81,21 @@ namespace ADO_CRUD.Repositories
             }
             return departments;
         }
+        public bool DeleteDept(int id)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("delete from hrm.departments where DepartmentID=@id", con);
+               // cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", id);
+
+                con.Open();
+                int rows = cmd.ExecuteNonQuery();
+
+                con.Close();
+                return rows > 0;
+            }
+        }
         public bool AddRole(roles roles)
         {
             using (SqlConnection con = _dbHelper.GetConnection())
@@ -134,6 +137,22 @@ namespace ADO_CRUD.Repositories
                 con.Close();
             }
             return roles;
+        }
+
+        public bool DeleteRole(int id)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("delete from hrm.roles where role_id=@id", con);
+                // cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", id);
+
+                con.Open();
+                int rows = cmd.ExecuteNonQuery();
+
+                con.Close();
+                return rows > 0;
+            }
         }
 
         public employees GetEmployeesById(int id)
@@ -805,5 +824,83 @@ namespace ADO_CRUD.Repositories
             }
         }
 
+        public List<PayableSalaryViewModel> GetMonthlyPayrollData()
+        {
+            List<PayableSalaryViewModel> list = new List<PayableSalaryViewModel>();
+
+            DateTime fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+            DateTime toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+            int totalDays = DateTime.DaysInMonth(fromDate.Year, fromDate.Month);
+            DateTime payDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 5);
+            //DateTime payDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                con.Open();
+
+                SqlCommand cmd = new SqlCommand(@"
+            SELECT e.EmployeeID, e.Name, e.Salary,
+                (SELECT COUNT(*) FROM hrm.employee_attendence a 
+                 WHERE a.EmployeeID = e.EmployeeID 
+                 AND a.Date BETWEEN @fromDate AND @toDate 
+                 AND a.Status = 'punch out') AS PresentDays,
+                (SELECT COUNT(*) FROM hrm.payroll p 
+                 WHERE p.EmployeeID = e.EmployeeID 
+                 AND p.PayDate = @payDate) AS PaidFlag
+            FROM hrm.employees e", con);
+
+                cmd.Parameters.AddWithValue("@fromDate", fromDate);
+                cmd.Parameters.AddWithValue("@toDate", toDate);
+                cmd.Parameters.AddWithValue("@payDate", payDate);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int presentDays = Convert.ToInt32(reader["PresentDays"]);
+                    decimal salary = Convert.ToDecimal(reader["Salary"]);
+                    decimal payable = Math.Round((salary * presentDays) / totalDays, 2);
+
+                    list.Add(new PayableSalaryViewModel
+                    {
+                        EmployeeID = Convert.ToInt32(reader["EmployeeID"]),
+                        Name = reader["Name"].ToString(),
+                        MonthlySalary = salary,
+                        PresentDays = presentDays,
+                        TotalDaysInMonth = totalDays,
+                        PayableAmount = payable,
+                        IsPaid = Convert.ToInt32(reader["PaidFlag"]) > 0
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        public void PayEmployeeSalary(int employeeId, decimal amount)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                con.Open();
+
+                SqlCommand cmd = new SqlCommand(@"INSERT INTO hrm.payroll(EmployeeID, Amount, PayDate, PayType)
+                                          VALUES(@empId, @amount, @payDate, @payType)", con);
+
+                cmd.Parameters.AddWithValue("@empId", employeeId);
+                cmd.Parameters.AddWithValue("@amount", amount);
+                cmd.Parameters.AddWithValue("@payDate", new DateTime(DateTime.Now.Year, DateTime.Now.Month, 5));
+                cmd.Parameters.AddWithValue("@payType", "Manual");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void PayAllSalaries()
+        {
+            var list = GetMonthlyPayrollData();
+            foreach (var emp in list.Where(x => !x.IsPaid))
+            {
+                PayEmployeeSalary(emp.EmployeeID, emp.PayableAmount);
+            }
+        }
     }
 }

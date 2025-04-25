@@ -102,14 +102,6 @@ namespace ERPSystem.Controllers
             return View();
         }
 
-        
-        public IActionResult Payroll()
-        {
-
-
-            return View();
-        }
-
         public IActionResult GetTodayAttendence()
         {
             var employees_attendence = _repositories.GetTodayAttendence(Convert.ToInt32(HttpContext.Session.GetString("EmployeeID")));
@@ -162,6 +154,28 @@ namespace ERPSystem.Controllers
         {
             var employee_Attendences = _repositories.PunchHistory(Convert.ToInt32(HttpContext.Session.GetString("EmployeeID")));
             return View(employee_Attendences);
+        }
+
+        // payroll
+
+        public ActionResult Payroll()
+        {
+            var model = _repositories.GetMonthlyPayrollData();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult PayEmployee(int id, decimal amount)
+        {
+            _repositories.PayEmployeeSalary(id, amount);
+            return RedirectToAction("Payroll");
+        }
+
+        [HttpPost]
+        public ActionResult PayAll()
+        {
+            _repositories.PayAllSalaries();
+            return RedirectToAction("Payroll");
         }
     }
 }
