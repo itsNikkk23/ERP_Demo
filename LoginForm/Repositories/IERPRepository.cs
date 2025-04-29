@@ -14,19 +14,19 @@ namespace ERP.Repository
         void InsertRawMaterials(string MaterialName, string MaterialType, string UnitOfMeasure, string Description);
         void UpdateRawMaterials(int RawMaterialID, string MaterialName, string MaterialType, string UnitOfMeasure, string Description);
         void DeleteRawMaterials(int RawMaterialID);
-        void InsertSuppliers(string SupplierName,string SupplierContact);
-       // void GetSupplierById(int SupplierID);
-       List<Suppliers> GetAllSuppliers();
+        void InsertSuppliers(string SupplierName, string SupplierContact);
+        // void GetSupplierById(int SupplierID);
+        List<Suppliers> GetAllSuppliers();
         void UpdateSuppliers(int SupplierId, string SupplierName, string SupplierContact);
         Suppliers GetSupplierById(int SupplierID);
         void DeleteSuppliers(int SupplierId);
-        void InsertPurchaseOrder(int SupplierID, DateTime OrderDate,DateTime DeliveryDate,Decimal TotalAmount,string Status);
+        void InsertPurchaseOrder(int SupplierID, DateTime OrderDate, DateTime DeliveryDate, Decimal TotalAmount, string Status);
         List<PurchaseOrders> GetAllPurchaseOrders();
-         PurchaseOrders GetPurchaseOrderById(int PurchaseOrderID);
+        PurchaseOrders GetPurchaseOrderById(int PurchaseOrderID);
         void UpdatePurchaseOrder(int OrderID, int SupplierID, DateTime OrderDate, DateTime? DeliveryDate, decimal TotalAmount, string Status);
         void DeletePurchaseOrder(int OrderID);
         void AddWeaving(string weave_type, string loomtype);
-        List<Weaving_process>GetWeavingProcess();
+        List<Weaving_process> GetWeavingProcess();
         Weaving_process GetWeavingById(int WeaveID);
         void UpdateWeaving(int WeaveID, string weave_type, string loomtype);
         void DeleteWeaving(int WeaveID);
@@ -43,7 +43,7 @@ namespace ERP.Repository
         //void InsertDesigns(string DesignType);
         //public List<Designs> GetDesign();
         public List<Designs> GetDesign();
-        void AddCategory(string CategoryName,string Description);
+        void AddCategory(string CategoryName, string Description);
         List<Categories> GetCategory();
         Categories GetCategoryById(int CategoryID);
         void UpdateCategory(int CategoryID, string CategoryName, string Description);
@@ -56,12 +56,12 @@ namespace ERP.Repository
         void UpdateProductAttribute(int productAttributeid, int CategoryID, int FabricID, int DesignID, int WeaveID, int ColorID);
         void DeleteProductAttribute(int productAttributeid);
         void AddProduction(int productAttributeid, DateTime ProductionDate, string MachineUsed, int EmployeeID, int RawMaterialID, int Quantity);
-        public  List<Production> GetProduction();
+        public List<Production> GetProduction();
         public List<employees> GetEmployees();
         //employees GetEmployeesById(int EmployeeID);
         Production GetProductionById(int ProductionID);
         void UpdateProduction(int ProductionID, int productAttributeid, DateTime ProductionDate, string MachineUsed, int EmployeeID, int RawMaterialID, int Quantity);
-        int AddProducts(string ProductName,int ProductionID, decimal ProductRatings,decimal Price, string Description);
+        int AddProducts(string ProductName, int ProductionID, decimal ProductRatings, decimal Price, string Description);
         public List<Products> GetProducts();
         void UpdateProduct(int productid, string ProductName, int ProductionID, decimal ProductRatings, decimal Price, string Description);
 
@@ -71,5 +71,9 @@ namespace ERP.Repository
         public List<ProductView> GetProductsWithImages();
         ProductImage GetProductImageById(int ImageID);
         Products GetProductsbyid(int productid);
+        void UpdateProductImage(int productid, string newImagePath);
+        //Search Products
+        public List<ProductView> SearchProducts(string searchTerm);
+        void DeleteProduct(int productid);
     }
 }
