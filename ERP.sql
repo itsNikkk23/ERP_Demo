@@ -338,8 +338,9 @@ campaign_name nvarchar(50),
 campaign_type nvarchar(50),--'Email', 'Social Media', 'Ad', 'Referral'
 start_date date,
 end_date date,
-budget decimal(10,2),
-status nvarchar(15),--'Planned','Active','Completed','Cancelled'
+campaignIMG nvarchar(max),
+discount decimal(5,2),
+status varchar(20) default 'deactive' 
 constraint pk_camp primary key(campaign_id)
 )
 
