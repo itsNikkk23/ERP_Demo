@@ -1,6 +1,41 @@
 ﻿@model List<LoginForm.Models.departments>
 
-<a asp-action="AddDept" class="btn btn-primary">Add New Department</a>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    @* <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" /> *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add New Department
+</button>
+
+<!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form asp-action="AddDept" method="post">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Department</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="DepartmentName" class="form-label">Department Name</label>
+                            <input type="text" class="form-control" id="DepartmentName" name="DepartmentName" placeholder="Enter department name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-end">
+                      
+                        <button type="submit" class="btn btn-success">Add Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 <table class="table table-bordered mt-3">
     <thead>
@@ -22,11 +57,15 @@
                 <td>
                     <a asp-action="UpdateEmp" asp-route-id="@department.DepartmentID">Edit</a> |
 
-                    <a asp-action="DeleteEmp" asp-route-id="@department.DepartmentID">Delete</a>
+                    <a asp-action="DeleteDept" asp-route-id="@department.DepartmentID">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<p>Hello </p>
-Zrdrff
+
+
+
+</body>
+</html>
+

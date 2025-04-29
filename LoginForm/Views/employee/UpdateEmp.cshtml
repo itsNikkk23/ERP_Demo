@@ -4,75 +4,103 @@
 
 <h4>employee</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="UpdateEmp" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" type="password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="role_id" class="control-label"></label>
-                <select asp-for="role_id" class="form-control" asp-items="@(new SelectList(ViewBag.roles,"role_id","role_name"))">
-                    <option value="">Select Role</option>
-                </select>
-                <span asp-validation-for="role_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DepartmentID" class="control-label"></label>
-                <select asp-for="DepartmentID" class="form-control" asp-items="@(new SelectList(ViewBag.depts,"DepartmentID","DepartmentName"))">
-                    <option value="">Select Department</option>
-                </select>
-                <span asp-validation-for="DepartmentID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Salary" class="control-label"></label>
-                <input asp-for="Salary" class="form-control" />
-                <span asp-validation-for="Salary" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Hobbies:</label><br />
-                @foreach (var hobby in new List<string> { "Reading", "Sports", "Music" })
-                {
-                    <input type="checkbox" name="Hobbies" value="@hobby"
-                    @(Model.Hobbies != null && Model.Hobbies.Contains(hobby) ? "checked" : "") />
-                    <label>@hobby</label>
-                }
-            </div>
-            <div class="form-group">
-                <label asp-for="profileimg"></label>
-                <input type="file" id="profileimg" asp-for="profileimg" class="form-control" accept="image/*" />
-            </div>
+<div class="container my-5">
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">Create New Employee</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateEmp" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="row g-3">
+                    <input type="hidden" asp-for="EmployeeID" />
 
 
-            @if (Model.profileimg != null)
-            {
-                <img src="data:@Model.contenttype;base64,@Convert.ToBase64String(Model.profileimg)" width="50" height="50" />
-            }
-            <div class="form-group">
-                <input type="submit" value="Update" class="btn btn-primary" />
+                    <!-- Name -->
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label fw-bold"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-md-6">
+                        <label asp-for="Password" class="form-label fw-bold"></label>
+                        <input asp-for="Password" class="form-control" type="password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label fw-bold"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- Role -->
+                    <div class="col-md-6">
+                        <label asp-for="role_id" class="form-label fw-bold"></label>
+                        <select asp-for="role_id" class="form-select"
+                                asp-items="@(new SelectList(ViewBag.roles, "role_id", "role_name"))">
+                            <option value="">Select Role</option>
+                        </select>
+                        <span asp-validation-for="role_id" class="text-danger"></span>
+                    </div>
+
+                    <!-- Department -->
+                    <div class="col-md-6">
+                        <label asp-for="DepartmentID" class="form-label fw-bold"></label>
+                        <select asp-for="DepartmentID" class="form-select"
+                                asp-items="@(new SelectList(ViewBag.depts, "DepartmentID", "DepartmentName"))">
+                            <option value="">Select Department</option>
+                        </select>
+                        <span asp-validation-for="DepartmentID" class="text-danger"></span>
+                    </div>
+
+                    <!-- Salary -->
+                    <div class="col-md-6">
+                        <label asp-for="Salary" class="form-label fw-bold"></label>
+                        <input asp-for="Salary" class="form-control" />
+                        <span asp-validation-for="Salary" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Hobbies:</label><br />
+                        @foreach (var hobby in new List<string> { "Reading", "Sports", "Music" })
+                        {
+                            <input type="checkbox" name="Hobbies" value="@hobby"
+                            @(Model.Hobbies != null && Model.Hobbies.Contains(hobby) ? "checked" : "") />
+                            <label>@hobby</label>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileimg"></label>
+                        <input type="file" id="profileimg" asp-for="profileimg" class="form-control" accept="image/*" />
+                    </div>
+
+
+                    @if (Model.profileimg != null)
+                    {
+                        <img src="data:@Model.contenttype;base64,@Convert.ToBase64String(Model.profileimg)" width="50" height="50" />
+                    }
+
+                    <!-- Submit Button -->
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-success px-5">Create</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
             </div>
-        </form>
-       
-        
+        </div>
     </div>
 </div>
 

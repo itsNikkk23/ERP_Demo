@@ -7,13 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Attendance Card</title>
     <style>
-        * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-        }
-
+      
 
 
         .card {
@@ -79,6 +73,53 @@
     </style>
 </head>
 <body>
+   
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+           
+            <div class="modal-content">
+                <form asp-action="UpdateAttendence" method="post">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Punch</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            @{
+                                var EmployeeID = @Context.Session.GetString("EmployeeID");
+                                var Status = "";
+
+                            }
+                            @if (@Context.Session.GetString("Status") == "Absent")
+                            {
+                                Status = "punch in";
+                            }
+                            else
+                            {
+                                Status = "punch out";
+                            }
+                            <input type="hidden" asp-for="@EmployeeID" />
+                            <label asp-for="@Status">@Status</label>
+                          
+                         
+                            
+                        </div>
+                        <div class="mb-3">
+                            <label>@DateTime.Now.ToString("HH:mm:ss")</label>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-end">
+
+                        <button type="submit" class="btn btn-success">Punch</button>
+                    </div>
+                </form>
+               
+            </div>
+        </div>
+    </div>
+
+
     <div class="container">
         <div class="card">
             <h2>Hi, @Context.Session.GetString("Name")</h2>
@@ -94,8 +135,8 @@
 
                     </div>
                     <div class="col col-3 justify-content-center">
-                        <button class="punch-btn">
-                            <a asp-action="UpdateAttendence" asp-route-id="@Model.EmployeeID" class="text-light">Punch</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Add Punch
                         </button>
 
                     </div>
@@ -112,8 +153,8 @@
 
                     </div>
                     <div class="col col-3 justify-content-center">
-                        <button class="punch-btn">
-                            <a asp-action="UpdateAttendence" asp-route-id="@Model.EmployeeID" class="text-light">Punch</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Punch
                         </button>
 
                     </div>
@@ -136,56 +177,11 @@
 
         </div>
 
-        </div>
+        
+    </div>
     </body>
 </html>
 
-  @*   <div class="profilecard mt-2">
-        <div class="profilecard-header">
-            <span>@Model.EmployeeID</span>
-            <span></span>
-            <span id="inTime" style="">In Time: @Model.ShiftStart</span>
-            <span id="outTime" style="">Out Time:@Model.ShiftEnd </span>
 
-        </div>
-        <span class="profiletemp" id="punchStatus">@Model.Status</span>
-        
-        <div class="profiletemp-scale" id="PunchLink" style="">
-			<a asp-action="UpdateAttendence" asp-route-id="@Model.EmployeeID">Punch</a>
-
-		</div>
-	</div> *@
-
-   @*  <div class="container-fluid bg-primary-subtle bg-opacity-50">
-        <div class="row">
-            <div class="col col-md-5">
-                <span>@Model.EmployeeID</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-5">
-                <span>@Model.Date</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-5">
-                <span>@Model.ShiftStart</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-5">
-                <span>@Model.ShiftEnd</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-5">
-                <span>@Model.Status</span>
-            </div>
-            <div class="col col-md-5">
-                <span>
-                    <a asp-action="UpdateAttendence" asp-route-id="@Model.EmployeeID">Punch</a></span>
-            </div>
-        </div>
-    </div> *@
 
 		
