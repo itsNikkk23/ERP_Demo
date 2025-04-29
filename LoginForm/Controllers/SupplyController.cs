@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LoginForm.Repository;
+using ERP.Repository;
 using System.Collections.Generic;
-using LoginForm.Models;
+using ERP.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace LoginForm.Controllers
+namespace ERP.Controllers
 {
     // Use conventional attribute routing with token replacement for simplicity.
     [Route("[controller]/[action]")]

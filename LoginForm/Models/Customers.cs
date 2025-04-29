@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ERP.Models
 {
     //[Table("customers")]
-    public class Customer
+    public class Customers
     {
         public int customer_id { get; set; }
         //[Required(ErrorMessage = "First Name is required.")]

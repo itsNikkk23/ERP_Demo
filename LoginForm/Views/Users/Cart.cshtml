@@ -1,0 +1,53 @@
+﻿@* @model Cart
+
+<h2>Your Cart</h2>
+
+@if (Model.Items.Count == 0)
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.Product.ProductImages" width="50" height="50" alt="Product Image" />
+                        @item.Product.ProductName
+                    </td>
+                    <td>@item.Product.Price.ToString("C")</td>
+                    <td>
+                        <form action="@Url.Action("UpdateQuantity", "Cart")" method="post">
+                            <input type="hidden" name="productId" value="@item.Product.productid" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" />
+                            <button type="submit" class="btn btn-info">Update</button>
+                        </form>
+                    </td>
+                    <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
+                    <td>
+                        <form action="@Url.Action("RemoveFromCart", "Cart")" method="post">
+                            <input type="hidden" name="productId" value="@item.Product.productid" />
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Total: @Model.TotalPrice().ToString("C")</h3>
+
+    <a href="@Url.Action("Checkout", "Cart")" class="btn btn-success">Proceed to Checkout</a>
+}
+ *@

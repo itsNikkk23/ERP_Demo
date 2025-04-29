@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LoginForm.Repository;
-using LoginForm.Models;
+using ERP.Repository;
+using ERP.Models;
 
 namespace LoginForm.Controllers.Api
 {

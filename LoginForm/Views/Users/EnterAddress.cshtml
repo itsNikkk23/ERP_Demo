@@ -1,0 +1,118 @@
+﻿@model ERP.Models.AddressModel
+@{
+    ViewBag.Title = "Enter Delivery Address";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int pid = Convert.ToInt32(TempData["pid"]);
+    int quantity = Convert.ToInt32(TempData["quantity"]);
+    int customerId = Convert.ToInt32(TempData["customerId"]);
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Enter Delivery Address</h2>
+
+    <form id="addressForm" method="post" asp-action="SubmitAddress">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Pincode" class="form-label">Pincode</label>
+                <input asp-for="Pincode" class="form-control" required />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="HouseNumber" class="form-label">House / Flat / Office No.</label>
+                <input asp-for="HouseNo" class="form-control" required />
+            </div>
+
+            <div class="col-12 mb-3">
+                <label for="Area" class="form-label">Road Name / Area / Colony</label>
+                <textarea asp-for="Street" class="form-control" rows="2" required></textarea>
+            </div>
+            <div class="col-12 mb-3">
+                <label for="Area" class="form-label">City</label>
+                <input type="number" asp-for="CityID" class="form-control" rows="2" required>
+            </div>
+            <div class="col-12 mb-3">
+                <label for="Area" class="form-label">State</label>
+                <input type="number" asp-for="StateID" class="form-control" rows="2" required>
+            </div>
+            <div class="col-12 mb-3">
+                <label for="Area" class="form-label">Country</label>
+                <input type="number" asp-for="CountryID" class="form-control" rows="2" required>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+                <input class="form-check-input" type="checkbox" checked disabled>
+                <label class="form-check-label">Use as default address</label>
+            </div>
+
+            <h4>Contact Details</h4>
+
+            @* <div class="col-md-6 mb-3">
+                <label for="Name" class="form-label">Name</label>
+                <input asp-for="Name" class="form-control" required />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Phone" class="form-label">Phone</label>
+                <input asp-for="Phone" class="form-control" required />
+            </div>
+
+            <div class="col-12 mb-4">
+                <label for="Email" class="form-label">Email ID (Optional)</label>
+                <input asp-for="Email" class="form-control" />
+            </div> *@
+
+            <!-- Hidden Fields for Product & Quantity -->
+            <input type="hidden" name="pid" value="@pid" />
+            <input type="hidden" name="quantity" value="@quantity" />
+            <input type="hidden" name="customerId" value="@customerId" />
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-danger w-100">Continue to Payment</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    $("#addressForm").submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: "POST",
+            url: "/Users/SubmitAddress", // adjust if your controller is different
+            data: $(this).serialize(),
+            success: function (response) {
+                var options = {
+                    "key": response.razorpayKey,
+                    "amount": response.amount * 100,
+                    "currency": "INR",
+                    "name": "My Shop",
+                    "description": "Secure Payment",
+                    "order_id": response.razorpayOrderId,
+                    "handler": function (razorpayResponse) {
+                        window.location.href = '/Users/PaymentSuccess?razorpay_payment_id=' + razorpayResponse.razorpay_payment_id
+                            + '&razorpay_order_id=' + razorpayResponse.razorpay_order_id
+                            + '&razorpay_signature=' + razorpayResponse.razorpay_signature
+                            + '&orderId=' + response.orderId
+                            + '&pid=' + response.pid
+                            + '&quantity=' + response.quantity;
+                    },
+                    "prefill": {
+                        "name": "Demo User",
+                        "email": "demo@email.com",
+                        "contact": "9999999999"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp = new Razorpay(options);
+                rzp.open();
+            },
+            error: function (err) {
+                alert("Error: " + err.responseText);
+            }
+        });
+    });
+</script>

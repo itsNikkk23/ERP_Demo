@@ -794,9 +794,9 @@ namespace ERP.Repositories
         }
 
         // Customers
-        public List<Customer> DispCustomers()
+        public List<Customers> DispCustomers()
         {
-            List<Customer> customers = new List<Customer>();
+            List<Customers> customers = new List<Customers>();
 
             using (SqlConnection con = _dbHelper.GetConnection())
             {
@@ -809,7 +809,7 @@ namespace ERP.Repositories
                 while (reader.Read())
                 {
                     customers.Add(
-                        new Customer
+                        new Customers
                         {
                             customer_id = Convert.ToInt32(reader["customer_id"]),
                             firstName = reader["firstName"].ToString(),

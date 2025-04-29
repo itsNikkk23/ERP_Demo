@@ -1,0 +1,10 @@
+﻿@model IEnumerable<ERP.Models.Category>
+
+@foreach (var category in Model)
+{
+    <li>
+        <a class="dropdown-item" asp-controller="Home" asp-action="CategoryWiseProduct" asp-route-id="@category.CategoryId">
+            @category.CategoryName
+        </a>
+    </li>
+}

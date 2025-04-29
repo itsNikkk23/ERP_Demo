@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var razorpayOrderId = TempData["RazorpayOrderId"] as string;
+    var amount = TempData["Amount"];
+}
+
+<h2>Redirecting to Razorpay...</h2>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "rzp_test_ff2f2hHJPr8s6m", // Replace with your Razorpay key
+        "amount": "@(Convert.ToInt32(amount) * 100)",
+        "currency": "INR",
+        "name": "ERP System",
+        "description": "Order Payment",
+        "order_id": "@razorpayOrderId",
+        "handler": function (response) {
+            // Submit payment response to ConfirmPayment action
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/Cart/ConfirmPayment";
+
+            var paymentInput = document.createElement("input");
+            paymentInput.name = "paymentId";
+            paymentInput.value = response.razorpay_payment_id;
+            form.appendChild(paymentInput);
+
+            var orderInput = document.createElement("input");
+            orderInput.name = "orderId";
+            orderInput.value = response.razorpay_order_id;
+            form.appendChild(orderInput);
+
+            var sigInput = document.createElement("input");
+            sigInput.name = "razorpay_signature";
+            sigInput.value = response.razorpay_signature;
+            form.appendChild(sigInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+</script>

@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<DbHelper>();
 builder.Services.AddScoped<IEmployeeRepositories, EmployeeRepositories>();
 builder.Services.AddScoped<IERPRepository, ERPRepository>();
+builder.Services.AddScoped<ICustomersRepositories, CustomersRepositories>();
 builder.Services.AddSession(options =>
 {
     //options.IdleTimeout = TimeSpan.FromHours(1); // Session expires after 1 hour of inactivity
@@ -45,7 +46,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 

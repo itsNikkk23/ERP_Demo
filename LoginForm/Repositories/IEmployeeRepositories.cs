@@ -78,7 +78,7 @@ namespace ERP.Repositories
         // Customers
         bool DeleteCustomers(int id);
 
-        List<Customer> DispCustomers();
+        List<Customers> DispCustomers();
 
         // Employee Salary Payout
 
