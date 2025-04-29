@@ -10,10 +10,69 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/login.css" />
 </head>
+<style>
+    /* Custom Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-track {
+        background: #4a9192;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #3a7273;
+        border-radius: 3px;
+    }
+    /* Sidebar positioning */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 16rem; /* 64 */
+        z-index: 50;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    @@media (min-width: 768px) {
+        .sidebar {
+            transform: translateX(0);
+        }
+    }
+    /* Overlay for mobile */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.3);
+        z-index: 40;
+    }
+
+    .sidebar-open .sidebar-overlay {
+        display: block;
+    }
+    /* Icon rotation */
+    .rotate-90 {
+        transform: rotate(90deg);
+    }
+
+    .transition-transform {
+        transition: transform 0.2s;
+    }
+</style>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <div class="flex flex-col md:flex-row min-h-screen">
         <!-- Sidebar -->
-        <div class="bg-gray-900 text-white w-full md:w-64 min-h-screen overflow-y-auto fixed">
+        <div class="bg-[#5ba7a8] text-white w-full md:w-64 min-h-screen overflow-y-auto fixed">
             <div class="flex items-center justify-center h-16 border-b border-gray-800">
                 <img src="https://storage.googleapis.com/a1aa/image/kaZnImMwEwVyj1Br4D84VKEpHwTdxx98uUckZILpDFw.jpg" alt="Logo" class="h-8 w-8 mr-2" />
                 <span class="text-xl font-semibold">ADMIN PANEL</span>
@@ -26,7 +85,7 @@
                         case "1":
                             <a asp-controller="AdminHome" asp-action="Home" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-industry"></i> Dashboard</a>
                             <a asp-controller="AdminHome" asp-action="DispHandlooms" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-industry"></i> HandLoom</a>
-                           @*  <a asp-controller="AdminHome" asp-action="BulkPurchase" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-tags"></i> Orders</a>
+                            @*  <a asp-controller="AdminHome" asp-action="BulkPurchase" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-tags"></i> Orders</a>
                             <a asp-controller="Products" asp-action="DisplayProducts" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-gears"></i> Products</a> *@
 
                             <hr class="border-gray-700 my-2" />
@@ -70,11 +129,22 @@
                             <a asp-controller="Login" asp-action="Login" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                             break;
                         case "3":
-                            <a asp-controller="Supply" asp-action="Products" class="py-2 px-3 rounded hover:bg-gray-700">Products</a>
-                            <a asp-controller="Manufacture" asp-action="AddRawMaterials" class="py-2 px-3 rounded hover:bg-gray-700">AddRawMaterial</a>
-                            <a asp-controller="Manufacture" asp-action="ViewRawMaterials" class="py-2 px-3 rounded hover:bg-gray-700">CheckMaterial</a>
+                            <a asp-controller="Supply" asp-action="ViewProducts" class="py-2 px-3 rounded hover:bg-gray-700">ViewProducts</a>
+                            <a asp-controller="Supply" asp-action="AddImage" class="py-2 px-3 rounded hover:bg-gray-700">AddImage</a>
+                            <a asp-controller="Supply" asp-action="ViewImage" class="py-2 px-3 rounded hover:bg-gray-700">ViewImage</a>
+                            <a asp-controller="Supply" asp-action="AddProducts" class="py-2 px-3 rounded hover:bg-gray-700">AddProducts</a>
+                            <a asp-controller="Supply" asp-action="AddCategory" class="py-2 px-3 rounded hover:bg-gray-700">AddCategory</a>
+                            <a asp-controller="Supply" asp-action="DisplayCategory" class="py-2 px-3 rounded hover:bg-gray-700">ViewCategory</a>
+                          @*   <a asp-controller="Manufacture" asp-action="AddPurchaseOrder" class="py-2 px-3 rounded hover:bg-gray-700">AddPurchaseOrder</a> *@
+                            <a asp-controller="Manufacture" asp-action="ViewPurchaseOrders" class="py-2 px-3 rounded hover:bg-gray-700">ViewPurchases</a>
                             <a asp-controller="Supply" asp-action="AddSuppliers" class="py-2 px-3 rounded hover:bg-gray-700">AddSuppliers</a>
                             <a asp-controller="Supply" asp-action="Suppliers" class="py-2 px-3 rounded hover:bg-gray-700">ViewSuppliers</a>
+
+                            @* <a asp-controller="Supply" asp-action="Products" class="py-2 px-3 rounded hover:bg-gray-700">Products</a> *@
+                           
+                            <a asp-controller="Manufacture" asp-action="AddRawMaterials" class="py-2 px-3 rounded hover:bg-gray-700">AddRawMaterial</a>
+                            <a asp-controller="Manufacture" asp-action="ViewRawMaterials" class="py-2 px-3 rounded hover:bg-gray-700">CheckMaterial</a>
+
                             <a asp-controller="Manufacture" asp-action="AddWeaving" class="py-2 px-3 rounded hover:bg-gray-700">AddWeaving</a>
                             <a asp-controller="Manufacture" asp-action="WeaveProcess" class="py-2 px-3 rounded hover:bg-gray-700">ViewWeaving</a>
                             <a asp-controller="Manufacture" asp-action="AddProductColor" class="py-2 px-3 rounded hover:bg-gray-700">AddProductColor</a>
@@ -82,17 +152,11 @@
                             <a asp-controller="Manufacture" asp-action="AddFabrics" class="py-2 px-3 rounded hover:bg-gray-700">AddFabrics</a>
                             <a asp-controller="Manufacture" asp-action="ViewFabrics" class="py-2 px-3 rounded hover:bg-gray-700">Fabrics</a>
                             <a asp-controller="Manufacture" asp-action="AddProductAttribute" class="py-2 px-3 rounded hover:bg-gray-700">AddAttributes</a>
-                            <a asp-controller="Manufacture" asp-action="ViewProductAttribute" class="py-2 px-3 rounded hover:bg-gray-700">ProductAttributes</a>
+                     @*        <a asp-controller="Manufacture" asp-action="ViewProductAttribute" class="py-2 px-3 rounded hover:bg-gray-700">ProductAttributes</a> *@
                             <a asp-controller="Manufacture" asp-action="AddProduction" class="py-2 px-3 rounded hover:bg-gray-700">AddProduction</a>
                             <a asp-controller="Manufacture" asp-action="ViewProduction" class="py-2 px-3 rounded hover:bg-gray-700">ViewProduction</a>
-                            <a asp-controller="Supply" asp-action="AddImage" class="py-2 px-3 rounded hover:bg-gray-700">AddImage</a>
-                            <a asp-controller="Supply" asp-action="ViewImage" class="py-2 px-3 rounded hover:bg-gray-700">ViewImage</a>
-                            <a asp-controller="Supply" asp-action="AddProducts" class="py-2 px-3 rounded hover:bg-gray-700">AddProducts</a>
-                            <a asp-controller="Supply" asp-action="ViewProducts" class="py-2 px-3 rounded hover:bg-gray-700">ViewProducts</a>
-                            <a asp-controller="Supply" asp-action="AddCategory" class="py-2 px-3 rounded hover:bg-gray-700">AddCategory</a>
-                            <a asp-controller="Supply" asp-action="DisplayCategory" class="py-2 px-3 rounded hover:bg-gray-700">ViewCategory</a>
-                            <a asp-controller="Manufacture" asp-action="AddPurchaseOrder" class="py-2 px-3 rounded hover:bg-gray-700">AddPurchaseOrder</a>
-                            <a asp-controller="Manufacture" asp-action="ViewPurchaseOrders" class="py-2 px-3 rounded hover:bg-gray-700">ViewPurchases</a>
+                            <a asp-controller="Login" asp-action="Login" class="py-2 px-3 rounded hover:bg-gray-700"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
                             break;
                         default:
                             break;
@@ -157,21 +221,27 @@
 
     <!-- Adjust sidebar height based on main content -->
     <script>
-        window.addEventListener('resize', adjustSidebarHeight);
-        window.addEventListener('load', adjustSidebarHeight);
-
-        function adjustSidebarHeight() {
-            const mainContent = document.querySelector('.flex-1');
-            const sidebar = document.querySelector('.bg-gray-900');
-            if (mainContent && sidebar) {
-                sidebar.style.height = mainContent.scrollHeight + 'px';
-            }
-        }
-
-        // Add toggle functionality for mobile
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            document.querySelector('.bg-gray-900').classList.toggle('hidden-mobile');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const body = document.body;
+        function toggleSidebar() { body.classList.toggle('sidebar-open'); }
+        menuToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+        function handleResize() { if (window.innerWidth >= 768) body.classList.remove('sidebar-open'); }
+        window.addEventListener('resize', handleResize);
+        document.querySelectorAll('[data-menu]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.getAttribute('data-menu');
+                const menu = document.getElementById(key + '-menu');
+                const icon = btn.querySelector('i');
+                menu.classList.toggle('hidden');
+                icon.classList.toggle('rotate-90');
+            });
         });
     </script>
+
+    <script src="/js/content.js"></script>
+    @RenderSection("Scripts", required: false)
+
 </body>
 </html>
