@@ -1,8 +1,8 @@
-﻿using LoginForm.Models;
+﻿using ERP.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections;
 
-namespace LoginForm.Repository
+namespace ERP.Repository
 {
     public interface IERPRepository
     {

@@ -1,4 +1,4 @@
-﻿namespace LoginForm.Models
+﻿namespace ERP.Models
 {
     public class feedback
     {

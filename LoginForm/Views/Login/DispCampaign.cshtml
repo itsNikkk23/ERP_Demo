@@ -1,15 +1,96 @@
-﻿@model List<LoginForm.Models.campaign>
+﻿
+@model List<LoginForm.Models.campaign>
 
-@foreach (var campaign in Model)
-{
-    <div style="text-align: center; margin-bottom: 20px;">
-        @if (campaign.campaignIMG != null)
-        {
-            <img src="data:image/png;base64,@Convert.ToBase64String(campaign.campaignIMG)" style="width: 100%; max-width: 1200px; height:auto;" alt="Campaign Banner" />
-        }
-        else
-        {
-            <p>No profile Img</p>
-        }
-    </div>
+@{
+    ViewData["Title"] = "Campaign List";
 }
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Campaign List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <style>
+        .campaign-card {
+        border-radius: 12px;
+        transition: transform 0.2s ease-in-out;
+        }
+
+        .campaign-card:hover {
+        transform: scale(1.02);
+        }
+
+        .card-img-top {
+        height: 180px;
+        object-fit: cover;
+        }
+
+        .card-body h5 {
+        font-weight: bold;
+        color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h2 class="text-center mb-4">All Campaigns</h2>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow campaign-card">
+                        @* Campaign Image *@
+
+
+
+                        <div class="card-body">
+                            <div>
+                                @if (item.campaignIMG != null && item.campaignIMG.Any())
+                                {
+                                    <img src="~/Image/@item.campaignIMG" width="100" height="100" />
+                                }
+                            </div>
+                            <h5 class="card-title">@item.campaign_name</h5>
+                            <p class="card-text">
+                                <strong>Type:</strong> @item.campaign_type <br />
+                                <strong>Start:</strong> @item.start_date.ToShortDateString() <br />
+                                <strong>End:</strong> @item.end_date.ToShortDateString()
+                                <strong>Discount:</strong> @item.discount <br />
+                                @if (item.status=="active")
+                                {
+                                    <span class="badge bg-success text-light">@item.status</span>
+
+                                }
+                                else
+                                {
+                                <span class="badge bg-warning text-dark">@item.status</span>
+                                    
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <form asp-action="EditCampaignStatus" method="post">
+                                <input type="hidden" name="id" value="@item.campaign_id" />
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                        @item.status
+                                </button>
+                            </form>
+                           
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+

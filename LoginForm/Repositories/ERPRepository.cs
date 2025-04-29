@@ -1,9 +1,9 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
-using LoginForm.Models;
-using LoginForm.Data;
+using ERP.Models;
+using ERP.Data;
 using Microsoft.Data.SqlClient;
-namespace LoginForm.Repository
+namespace ERP.Repository
 {
     public class ERPRepository : IERPRepository
     {

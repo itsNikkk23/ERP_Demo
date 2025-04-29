@@ -1,12 +1,11 @@
-﻿using ADO_CRUD.Repositories;
-using ERPSystem.Controllers;
-using LoginForm.Models;
-using LoginForm.Repositories;
+﻿using ERP.Repositories;
+using ERP.Controllers;
+using ERP.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace LoginForm.Controllers
+namespace ERP.Controllers
 {
     public class LoginController : Controller
     {
@@ -22,14 +21,14 @@ namespace LoginForm.Controllers
 
         public IActionResult Login()
         {
-            
+
             return View();
         }
 
         [HttpPost]
         public ActionResult Login(string Email, string Password)
         {
-            
+
             if (_repositories.Login(Email, Password))
             {
                 // Login successful
@@ -77,36 +76,52 @@ namespace LoginForm.Controllers
         [HttpPost]
         public ActionResult AddCampaign(campaign cam, IFormFile campaignIMG)
         {
-            byte[] campaignIMG1 = null;
+
             if (campaignIMG != null && campaignIMG.Length > 0)
             {
-                using (var memoryStream = new MemoryStream())
+                //string fileName = Path.GetFileName(campaignIMG.FileName);
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Image");
+
+                if (!Directory.Exists(filePath))
                 {
-                    campaignIMG.CopyToAsync(memoryStream);
-                    campaignIMG1 = memoryStream.ToArray();
-                   
+                    Directory.CreateDirectory(filePath);
+                }
+
+                // Save the file to the specified path
+                string fileName = Path.GetFileName(campaignIMG.FileName);
+                string filePathWithName = Path.Combine(filePath, fileName);
+
+
+                using (var stream = new FileStream(filePathWithName, FileMode.Create))
+                {
+                    campaignIMG.CopyTo(stream);
                 }
             }
-            bool res = _repositories.AddCampaign(cam, campaignIMG1);
+            cam.campaignIMG = campaignIMG.FileName;
+            bool res = _repositories.AddCampaign(cam);
             if (res)
             {
-                return RedirectToAction("Home","AdminHome");
+                return RedirectToAction("DispCampaign");
             }
-            // return View(stud);
 
-            // }
-            Console.WriteLine("Model validation failed:");
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
-           
             return View(cam);
         }
 
         public IActionResult DispCampaign()
         {
             var campaigns = _repositories.DispCampaign();
+            return View(campaigns);
+        }
+
+        [HttpPost]
+        public IActionResult EditCampaignStatus(int campaign_id)
+        {
+            var campaigns = _repositories.EditCampaignStatus(campaign_id);
+            if (campaigns)
+            {
+                return RedirectToAction("DispCampaign");
+            }
+
             return View(campaigns);
         }
     }

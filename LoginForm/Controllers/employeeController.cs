@@ -1,10 +1,10 @@
 ﻿
-using LoginForm.Models;
-using LoginForm.Repositories;
+using ERP.Models;
+using ERP.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace LoginForm.Controllers
+namespace ERP.Controllers
 {
     public class employeeController : Controller
     {

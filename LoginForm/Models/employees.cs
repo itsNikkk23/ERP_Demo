@@ -1,7 +1,7 @@
-﻿using LoginForm.Models;
+﻿using ERP.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace LoginForm.Models
+namespace ERP.Models
 {
     public class employees
     {

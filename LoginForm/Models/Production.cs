@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-namespace LoginForm.Models
+namespace ERP.Models
 {
     [Table("Production", Schema = "Manufacture")]
     public class Production

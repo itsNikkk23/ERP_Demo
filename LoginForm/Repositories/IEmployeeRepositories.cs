@@ -1,10 +1,9 @@
 ﻿
 using ERP.Models;
-using LoginForm.Data;
-using LoginForm.Models;
+using ERP.Data;
 using Microsoft.Data.SqlClient;
 
-namespace LoginForm.Repositories
+namespace ERP.Repositories
 {
     public interface IEmployeeRepositories
     {
@@ -59,9 +58,12 @@ namespace LoginForm.Repositories
 
 
         // Add Campaign
-        bool AddCampaign(campaign campaign, byte[] campaignIMG);
+        bool AddCampaign(campaign camp);
 
         List<campaign> DispCampaign();
+
+        bool EditCampaignStatus(int campaign_id);
+
 
         // Handloom
         bool AddHandloom(Handloom handloom);

@@ -1,110 +1,138 @@
-﻿<html xmlns="http://www.w3.org/1999/xhtml">
+﻿
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="utf-8" />
     <title>Apply For Leave</title>
-   @*  <script>
-        // Event Functions
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        // On page load
-        window.onload = function () {
-            alert("Welcome to the Leave Application Page!");
-        };
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-        // On focus and blur events for Start Date
-        function highlightField(event) {
-            event.target.style.backgroundColor = "lightyellow";
-        }
-        function removeHighlight(event) {
-            event.target.style.backgroundColor = "";
+    <style>
+        body {
+            background: #f4f6f9;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        // Validate Leave Type selection
-        function validateLeaveType() {
-            const leaveType = document.getElementById("LeaveType");
-            if (leaveType.value === "") {
-                alert("Please select a valid leave type!");
-            }
+        .card {
+            background-color: #fff;
+            border-radius: 15px;
         }
 
-        // Form submission event
-        function onFormSubmit(event) {
-            event.preventDefault(); // Prevent form from submitting
-            const startDate = document.querySelector("input[name='StartDate']").value;
-            const endDate = document.querySelector("input[name='EndDate']").value;
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
 
-            if (!startDate || !endDate) {
-                alert("Please fill in both Start Date and End Date!");
-                return;
-            }
+        .form-control:focus, .form-select:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25,135,84,.25);
+        }
 
-            if (new Date(startDate) > new Date(endDate)) {
-                alert("Start Date cannot be later than End Date!");
-                return;
+        .btn-outline-success {
+            transition: all 0.3s ease-in-out;
+        }
+
+            .btn-outline-success:hover {
+                background-color: #198754;
+                color: white;
             }
 
-            alert("Form submitted successfully!");
-            // Proceed with form submission (uncomment below line in production)
-            // event.target.submit();
+        .highlight {
+            background-color: #e7fbe7;
         }
-
-        // On hover event for the submit button
-        function onHoverSubmitButton(event) {
-            event.target.style.backgroundColor = "green";
-            event.target.style.color = "white";
-        }
-
-        function onLeaveSubmitButton(event) {
-            event.target.style.backgroundColor = "";
-            event.target.style.color = "black";
-        }
-
-        // Change event for Leave Type
-        function leaveTypeChanged(event) {
-            console.log("Leave type selected: " + event.target.value);
-        }
-    </script> *@
+    </style>
 </head>
 <body>
-    <div class="col-md-8">
-        <div class="card p-4 shadow-lg">
-            <h2 style="color:black;font-family: 'Arial Narrow Bold'">Apply For Leave</h2>
-            <hr />
-            <form asp-action="AddLeaveRequests" method="post" >
-                <div class="mb-3">
-                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Employee</h3>
-                    <label>@Context.Session.GetString("Email")</label>
-                </div>
-                <div class="role-dropdown">
-                    <i class="fas fa-users"></i>
-                    <select id="LeaveType" name="LeaveType" class="form-select" onchange="leaveTypeChanged(event)" onblur="validateLeaveType()">
-                        <option value="" selected>Select Leave Type</option>
-                        <option value="casual">casual</option>
-                        <option value="sick">sick</option>
-                        <option value="annual">annual</option>
-                        <option value="Bereavement">Bereavement</option>
-                        <option value="Paternity">Paternity</option>
-                        <option value="Maternity">Maternity</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Start Date</h3>
-                    <input type="datetime-local" name="StartDate" value="" onfocus="highlightField(event)" onblur="removeHighlight(event)" />
-                </div>
-                <div class="mb-3">
-                    <h3 class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">End Date</h3>
-                    <input type="datetime-local" name="EndDate" value="" onfocus="highlightField(event)" onblur="removeHighlight(event)" />
-                </div>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg p-4">
+                    <h2 class="mb-4 text-center">Apply For Leave</h2>
+                    <form asp-action="AddLeaveRequests" method="post">
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label">Employee Email</label>
+                            <input type="text" class="form-control" value="@Context.Session.GetString("Email")" readonly />
+                        </div>
 
-                <div class="mb-3">
-                    <button type="submit"
-                            class="btn btn-outline-success"
-                            asp-action="AddLeaveRequests"
-                            onmouseover="onHoverSubmitButton(event)"
-                            onmouseout="onLeaveSubmitButton(event)">
-                        Submit
-                    </button>
+                        <!-- Leave Type -->
+                        <div class="mb-3">
+                            <label for="LeaveType" class="form-label">Leave Type</label>
+                            <select id="LeaveType" name="LeaveType" class="form-select" onchange="leaveTypeChanged()" onblur="validateLeaveType()">
+                                <option value="" selected>Select Leave Type</option>
+                                <option value="casual">Casual</option>
+                                <option value="sick">Sick</option>
+                                <option value="annual">Annual</option>
+                                <option value="Bereavement">Bereavement</option>
+                                <option value="Paternity">Paternity</option>
+                                @* <option value="Maternity">Maternity</option> *@
+                            </select>
+                            <div id="leaveTypeError" class="text-danger mt-1"></div>
+                        </div>
+
+                        <!-- Start Date -->
+                        <div class="mb-3">
+                            <label for="StartDate" class="form-label">Start Date</label>
+                            <input type="datetime-local" id="StartDate" name="StartDate" class="form-control" onfocus="highlightField(this)" onblur="removeHighlight(this)" />
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="mb-3">
+                            <label for="EndDate" class="form-label">End Date</label>
+                            <input type="datetime-local" id="EndDate" name="EndDate" class="form-control" onfocus="highlightField(this)" onblur="removeHighlight(this)" />
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-outline-success px-4 py-2"
+                                    onmouseover="onHoverSubmitButton(this)"
+                                    onmouseout="onLeaveSubmitButton(this)">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function highlightField(field) {
+            field.classList.add("highlight");
+        }
+
+        function removeHighlight(field) {
+            field.classList.remove("highlight");
+        }
+
+        function leaveTypeChanged() {
+            const leaveType = document.getElementById("LeaveType").value;
+            const errorDiv = document.getElementById("leaveTypeError");
+            if (!leaveType) {
+                errorDiv.innerText = "Please select a leave type.";
+            } else {
+                errorDiv.innerText = "";
+            }
+        }
+
+        function validateLeaveType() {
+            leaveTypeChanged(); // Reuse the same function
+        }
+
+        function onHoverSubmitButton(button) {
+            button.style.transform = "scale(1.05)";
+        }
+
+        function onLeaveSubmitButton(button) {
+            button.style.transform = "scale(1)";
+        }
+    </script>
 </body>
 </html>
