@@ -1,0 +1,151 @@
+﻿/* Container */
+.grid-container {
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+/* HEADER + ADD BUTTON */
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.grid-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-add {
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .btn-add:hover {
+        background-color: #218838;
+    }
+
+/* SEARCH / FILTER / TOTAL */
+.grid-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.grid-search,
+.grid-filter {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.grid-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.grid-filter {
+    min-width: 150px;
+}
+
+.grid-total {
+    margin-left: auto;
+    font-size: 0.9rem;
+    color: #555;
+    font-style: italic;
+}
+
+/* TABLE STYLING */
+.grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+    .grid-table thead th {
+        background-color: #036566;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        padding: 12px;
+        border: none;
+    }
+
+    .grid-table tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .grid-table td {
+        padding: 12px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+        border: none;
+    }
+
+    /* ROUNDED ROW EDGES */
+    .grid-table tbody tr:first-child td {
+        border-top: none;
+    }
+
+    .grid-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+/* BUTTON GROUP IN CELLS */
+.btn-group {
+    display: inline-flex;
+    gap: 8px;
+}
+
+    /* Icon bump for consistency */
+    .btn-group .bi {
+        font-size: 1.5rem;
+    }
+
+/* ICON-ONLY ACTIONS */
+.action-icon {
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 4px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+    .action-icon:hover {
+        color: #333;
+    }
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+    .grid-header,
+    .grid-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .grid-search,
+    .grid-filter {
+        width: 100%;
+        max-width: none;
+    }
+
+    .btn-group {
+        flex-wrap: wrap;
+    }
+}

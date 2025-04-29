@@ -1,11 +1,10 @@
-﻿using ADO_CRUD.Repositories;
-using LoginForm.Models;
-using LoginForm.Repositories;
+﻿using ERP.Repositories;
+using ERP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 
-namespace ERPSystem.Controllers
+namespace ERP.Controllers
 {
     public class EmpServicesController : Controller
     {

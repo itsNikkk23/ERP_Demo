@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace LoginForm.Models
+namespace ERP.Models
 {
     [Table("Suppliers",Schema ="Supply")]
     public class Suppliers

@@ -169,6 +169,48 @@ namespace LoginForm.Controllers
             List<ProductImage> images = _repository.GetProductImages();
             return View(images);
         }
+        [HttpGet]
+        public IActionResult EditImage(int id)
+        {
+            var image = _repository.GetProductImageById(id);
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Products = _repository.GetProducts(); // So you can rebind dropdown
+            return View(image);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditImage(ProductImage model, IFormFile NewImageFile)
+        {
+            if (NewImageFile != null && NewImageFile.Length > 0)
+            {
+                // Define image path
+                string uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image");
+                if (!Directory.Exists(uploadDir))
+                    Directory.CreateDirectory(uploadDir);
+
+                string fileName = Path.GetFileName(NewImageFile.FileName);
+                string filePath = Path.Combine(uploadDir, fileName);
+
+                // Save file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await NewImageFile.CopyToAsync(stream);
+                }
+
+                // Relative path for DB
+                string newImagePath = "/Image/" + fileName;
+
+                // ✅ Call UpdateProductImage from repository
+                _repository.UpdateProductImage(model.productid, newImagePath);
+            }
+
+            return RedirectToAction("ViewImage");
+        }
+
+
 
         [HttpGet]
         public IActionResult Products()
@@ -191,7 +233,6 @@ namespace LoginForm.Controllers
             string Description,
             IFormFile ProductImageFile)
         {
-            // Save product first and get the new ProductID
             int productId = _repository.AddProducts(ProductName, ProductionID, ProductRatings, Price, Description);
 
             // Then handle image upload if provided
@@ -211,8 +252,16 @@ namespace LoginForm.Controllers
 
                 string imagePath = "/Image/" + fileName;
 
-                // Save image to ProductImage table
-                _repository.AddProductImage(productId, imagePath);
+                // Use the stored procedure via repository method
+                try
+                {
+                    _repository.AddProductImage(productId, imagePath);
+                }
+                catch (Exception ex)
+                {
+                    // Optionally, log or handle error
+                    ViewBag.Error = ex.Message;
+                }
             }
 
             return RedirectToAction("ViewProducts");
@@ -223,6 +272,15 @@ namespace LoginForm.Controllers
             var productViews = _repository.GetProductsWithImages();
             return View(productViews);
         }
+        [HttpGet]
+        public IActionResult SearchProducts(string searchTerm)
+        {
+            ViewBag.SearchTerm = searchTerm; // Pass it to the view
+            var products = _repository.SearchProducts(searchTerm);
+            return View("ViewProducts", products);
+        }
+
+
         [HttpGet]
         public IActionResult EditProduct(int id)
         {
@@ -241,7 +299,13 @@ namespace LoginForm.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProduct(ProductView model, IFormFile ProductImageFile)
         {
-            _repository.UpdateProduct(model.Product.productid, model.Product.ProductName, model.Product.ProductionID, model.Product.ProductRatings, model.Product.Price, model.Product.Description);
+            _repository.UpdateProduct(
+                model.Product.productid,
+                model.Product.ProductName,
+                model.Product.ProductionID,
+                model.Product.ProductRatings,
+                model.Product.Price,
+                model.Product.Description);
 
             if (ProductImageFile != null && ProductImageFile.Length > 0)
             {
@@ -257,11 +321,21 @@ namespace LoginForm.Controllers
                 }
 
                 string imagePath = "/Image/" + fileName;
-                _repository.AddProductImage(model.Product.productid, imagePath);
+
+                // Insert new image using stored procedure logic
+                try
+                {
+                    _repository.AddProductImage(model.Product.productid, imagePath);
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Error = ex.Message;
+                }
             }
 
             return RedirectToAction("ViewProducts");
         }
+
 
 
 

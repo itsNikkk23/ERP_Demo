@@ -1,8 +1,7 @@
 
-using ADO_CRUD.Repositories;
-using LoginForm.Data;
-using LoginForm.Repositories;
-using LoginForm.Repository;
+using ERP.Repositories;
+using ERP.Data;
+using ERP.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 

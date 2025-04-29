@@ -4,6 +4,8 @@
 }
 
 <h2>Product Images</h2>
+<link rel="stylesheet" href="~/css/grid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
@@ -11,6 +13,7 @@
             <th>#</th>
             <th>Product ID</th>
             <th>Image</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,10 +26,54 @@
                     <img src="@item.ImagePath" alt="Product Image" style="height:100px;width:auto;border:1px solid #ccc;padding:4px;" />
                 </td>
                 <td>
-                    <a asp-action="EditProduct" asp-controller="Supply" asp-route-id="@item.productid" class="btn btn-primary">Edit</a>
-                    <a asp-action="DeleteProduct" asp-controller="Supply" asp-route-id="@item.productid" class="btn btn-danger">Delete</a>
+                    <!-- View Button -->
+                    <button type="button" class="btn btn-info view-image-btn"
+                            data-imageid="@item.Imageid"
+                            data-productid="@item.productid"
+                            data-imagepath="@item.ImagePath">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+
+                    <a asp-action="EditImage" asp-controller="Supply" asp-route-id="@item.Imageid" class="btn btn-primary">Edit</a>
+                    <a asp-action="DeleteProducts" asp-controller="Supply" asp-route-id="@item.productid" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Modal -->
+<div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewImageModalLabel">Product Image Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p><strong>Product ID:</strong> <span id="modalProductId"></span></p>
+                <img id="modalImage" src="" alt="Product Image" style="max-width:100%; border:1px solid #ccc; padding:5px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const viewButtons = document.querySelectorAll('.view-image-btn');
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = this.dataset.productid;
+                    const imagePath = this.dataset.imagepath;
+
+                    document.getElementById('modalProductId').textContent = productId;
+                    document.getElementById('modalImage').src = imagePath;
+
+                    const modal = new bootstrap.Modal(document.getElementById('viewImageModal'));
+                    modal.show();
+                });
+            });
+        });
+    </script>
+}

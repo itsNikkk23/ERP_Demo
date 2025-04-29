@@ -1,9 +1,9 @@
-﻿using LoginForm.Models;
-using LoginForm.Repositories;
+﻿using ERP.Models;
+using ERP.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ERPSystem.Controllers
+namespace ERP.Controllers
 {
     //[Route("Home")]
     public class AdminHome : Controller
