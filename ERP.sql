@@ -17,6 +17,9 @@ go
 create schema inventory
 go
 create schema finance
+go 
+create schema delivery
+go
 
 CREATE TABLE hrm.adminLogin(
 adminID int Identity(1,1), --pk
@@ -696,6 +699,27 @@ CREATE TABLE finance.ledger_entries (
     CreditAmount DECIMAL(18, 2),
     EntryDate DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Delivery --------
+Create Table delivery.Delivery(
+	delivery_id  INT IDENTITY(1,1) PRIMARY KEY,  
+	OrderId  INT FOREIGN KEY references sales.orders(OrderID),
+	DispatchDate DATETIME  ,
+	DeliveryDate DATETIME NULL  ,
+	DeliveryStatus VARCHAR(50), -- (Pending, Out for Delivery, Delivered, Returned)  
+	DeliveryPersonId INT  , --FK(Delivery Person)
+	TrackingNumber VARCHAR(100) , 
+	Remarks VARCHAR(250) 
+);
+
+Create Table delivery.Returns(
+	ReturnId INT IDENTITY(1,1) PRIMARY KEY ,
+	OrderId INT FOREIGN KEY references sales.orders(OrderID) ,
+	Reason VARCHAR(200),  
+	ReturnDate DATETIME , 
+	ReturnStatus VARCHAR(50), -- (Requested, Approved, Picked Up, Refunded)  
+	ApprovedBy INT  
+)
 
 
 
