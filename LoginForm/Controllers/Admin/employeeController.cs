@@ -1,10 +1,9 @@
-﻿
-using ERP.Models;
+﻿using ERP.Models;
 using ERP.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace ERP.Controllers
+namespace ERP.Controllers.Admin
 {
     public class employeeController : Controller
     {

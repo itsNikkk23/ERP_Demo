@@ -1,11 +1,10 @@
 ﻿using ERP.Repositories;
-using ERP.Controllers;
 using ERP.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ERP.Controllers
+namespace ERP.Controllers.Admin
 {
     public class LoginController : Controller
     {

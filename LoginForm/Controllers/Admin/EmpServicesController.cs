@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 
-namespace ERP.Controllers
+namespace ERP.Controllers.Admin
 {
     public class EmpServicesController : Controller
     {

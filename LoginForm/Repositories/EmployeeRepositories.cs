@@ -668,7 +668,7 @@ namespace ERP.Repositories
         {
             using (SqlConnection con = _dbHelper.GetConnection())
             {
-                SqlCommand cmd = new SqlCommand("update crm.campaign SET status = CASE \r\n                WHEN status = 'Active' THEN 'Deactive'\r\n                ELSE 'Active'\r\n             END where campaign_id=@campaign_id", con);
+                SqlCommand cmd = new SqlCommand("update crm.campaign SET status = CASE WHEN status = 'Active' THEN 'Deactive' ELSE 'Active' END where campaign_id=@campaign_id", con);
                 cmd.Parameters.AddWithValue("@campaign_id", campaign_id);
 
                 con.Open();

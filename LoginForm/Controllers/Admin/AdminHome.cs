@@ -3,7 +3,7 @@ using ERP.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ERP.Controllers
+namespace ERP.Controllers.Admin
 {
     //[Route("Home")]
     public class AdminHome : Controller
