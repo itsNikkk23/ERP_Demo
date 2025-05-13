@@ -1,33 +1,124 @@
-﻿@model List<LoginForm.Models.RawMaterials>
+﻿@model List<ERP.Models.RawMaterials>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Material ID</th>
-            <th>Material Name</th>
-            <th>Material Type</th>
-            <th>Unit Of Measure</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var material in Model)
-        {
-            <tr>
-                <td>@material.RawMaterialID</td>
-                <td>@material.MaterialName</td>
-                <td>@material.MaterialType</td>
-                <td>@material.UnitOfMeasure</td>
-                <td>@material.Description</td>
-                <td>
-                    <a asp-controller="Manufacture" asp-action="EditRawMaterials" asp-route-id="@material.RawMaterialID" class="btn btn-primary">Edit</a>
+@{
+    Layout = "~/Views/Shared/AdminPanel1.cshtml";
+    ViewData["Title"] = "Raw Materials";
+}
 
-                    <form asp-controller="Manufacture" asp-action="DeleteRawMaterials" asp-route-id="@material.RawMaterialID" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this material?');">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<link rel="stylesheet" href="~/css/grid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<div class="grid-container">
+    <div class="grid-header">
+        <h2 class="grid-title">Raw Materials</h2>
+        <a asp-action="AddRawMaterials" class="btn-add">
+            <i class="bi bi-plus-lg"></i> Add New Material
+        </a>
+    </div>
+
+    <div class="grid-toolbar">
+        <input type="text" id="liveSearch" class="grid-search" placeholder="Search Material..." />
+        <div class="grid-total ms-auto">Total: @Model.Count materials</div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="grid-table">
+            <thead>
+                <tr>
+                    <th>Material ID</th>
+                    <th>Material Name</th>
+                    <th>Material Type</th>
+                    <th>Unit Of Measure</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var material in Model)
+                {
+                    <tr>
+                        <td>@material.RawMaterialID</td>
+                        <td>@material.MaterialName</td>
+                        <td>@material.MaterialType</td>
+                        <td>@material.UnitOfMeasure</td>
+                        <td>@material.Description</td>
+                        <td>
+                            <div class="btn-group">
+                                <!-- View Icon -->
+                                <button type="button"
+                                        class="action-icon"
+                                        title="View Material"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewModal-@material.RawMaterialID">
+                                    <i class="bi bi-eye-fill"></i>
+                                </button>
+
+                                <!-- Edit -->
+                                <a asp-controller="Manufacture" asp-action="EditRawMaterials" asp-route-id="@material.RawMaterialID" class="action-icon" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <form asp-controller="Manufacture" asp-action="DeleteRawMaterials" asp-route-id="@material.RawMaterialID" method="post" style="display:inline;">
+                                    <button type="submit" class="action-icon" title="Delete" onclick="return confirm('Are you sure you want to delete this material?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Modal for View -->
+                    <div class="modal fade" id="viewModal-@material.RawMaterialID" tabindex="-1" aria-labelledby="viewModalLabel-@material.RawMaterialID" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-4 shadow">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="viewModalLabel-@material.RawMaterialID">Material Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Material ID:</strong> @material.RawMaterialID</p>
+                                    <p><strong>Name:</strong> @material.MaterialName</p>
+                                    <p><strong>Type:</strong> @material.MaterialType</p>
+                                    <p><strong>Unit Of Measure:</strong> @material.UnitOfMeasure</p>
+                                    <p><strong>Description:</strong> @material.Description</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById("liveSearch");
+            const rows = document.querySelectorAll(".grid-table tbody tr");
+
+            if (searchInput) {
+                searchInput.addEventListener("keyup", function () {
+                    const query = this.value.trim().toLowerCase();
+
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll("td");
+                        let match = false;
+
+                        cells.forEach(cell => {
+                            if (cell.textContent.toLowerCase().includes(query)) {
+                                match = true;
+                            }
+                        });
+
+                        row.style.display = match ? "" : "none";
+                    });
+                });
+            }
+        });
+    </script>
+}

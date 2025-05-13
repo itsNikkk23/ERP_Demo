@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LoginForm.Repository;
-using LoginForm.Models;
+using ERP.Repository;
+using ERP.Models;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace LoginForm.Controllers
+namespace ERP.Controllers
 {
     [Route("Manufacture")]
     public class ManufactureController : Controller

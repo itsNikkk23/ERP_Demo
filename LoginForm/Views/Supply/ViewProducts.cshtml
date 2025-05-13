@@ -1,87 +1,177 @@
-﻿@model List<LoginForm.Models.ProductView>
+﻿@model List<ERP.Models.ProductView>
 
 @{
-    Layout = "~/Views/Shared/Userlayout.cshtml";
+    Layout = "~/Views/Shared/AdminPanel1.cshtml";
     ViewData["Title"] = "Product Listing";
 }
 
-<h2 class="mb-4 text-center">Product Listing</h2>
+<link rel="stylesheet" href="~/css/grid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-<div class="container">
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-3 col-sm-6 col-12 py-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="position-relative">
-                        <img src="@item.ImagePath" alt="Product Image"
-                             class="card-img-top"
-                             style="height: 200px; object-fit: contain; padding: 10px; border-bottom: 1px solid #ddd;" />
-                        <a href="#" class="quick-view-btn btn btn-sm btn-light position-absolute top-0 end-0 m-2"
-                           onclick="showQuickView(this)">Quick View</a>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Product.ProductName</h5>
-                        <p class="card-text"><strong>Ratings:</strong> @item.Product.ProductRatings</p>
-                        <p class="card-text"><strong>Price:</strong> ₹@item.Product.Price</p>
-                        <p class="card-text"><strong>Description:</strong> @item.Product.Description</p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <a asp-action="EditProduct" asp-controller="Supply" asp-route-id="@item.Product.productid"
-                           class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="DeleteProduct" asp-controller="Supply" asp-route-id="@item.Product.productid"
-                           class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this product?');">
-                            Delete
-                        </a>
-                    </div>
-                </div>
-            </div>
-        }
+<div class="grid-container">
+
+    <!-- HEADER + ADD BUTTON -->
+    <div class="grid-header">
+        <h2 class="grid-title">Product Listing</h2>
+        <a asp-controller="Supply" asp-action="AddProducts" class="btn-add">
+            <i class="bi bi-plus-lg"></i> Add New Product
+        </a>
+    </div>
+
+    <!-- SEARCH / FILTER / TOTAL -->
+    <form asp-controller="Supply" asp-action="SearchProducts" method="get" class="grid-toolbar">
+        <input type="text"
+               id="liveSearch"
+               name="searchTerm"
+               class="grid-search"
+               placeholder="Search products..."
+               value="@ViewBag.SearchTerm" />
+        <select class="grid-filter">
+            <option>All Fields</option>
+            <option>Product Name</option>
+            <option>Ratings</option>
+        </select>
+        <button type="submit" class="btn btn-primary ms-2">
+            <i class="bi bi-search"></i>
+        </button>
+        <div class="grid-total ms-auto">
+            Total: @Model.Count products
+        </div>
+    </form>
+
+    <!-- DATA TABLE -->
+    <div class="table-responsive">
+        <table class="grid-table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Ratings</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Product.productid</td>
+                        <td>@item.Product.ProductName</td>
+                        <td>@item.Product.ProductRatings</td>
+                        <td>₹@item.Product.Price</td>
+                        <td>@item.Product.Description</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                                <img src="@item.ImagePath"
+                                     alt="Image"
+                                     class="img-thumbnail"
+                                     style="max-height:80px;" />
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group">
+
+                                <!-- VIEW -->
+                                <button type="button"
+                                        class="action-icon view-btn"
+                                        data-id="@item.Product.productid"
+                                        data-name="@item.Product.ProductName"
+                                        data-rating="@item.Product.ProductRatings"
+                                        data-price="@item.Product.Price"
+                                        data-description="@item.Product.Description"
+                                        data-image="@item.ImagePath"
+                                        title="View Details">
+                                    <i class="bi bi-eye-fill"></i>
+                                </button>
+
+                                <!-- EDIT -->
+                                <a asp-controller="Supply"
+                                   asp-action="EditProduct"
+                                   asp-route-id="@item.Product.productid"
+                                   class="action-icon"
+                                   title="Edit Product">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+
+                                <!-- DELETE -->
+                                <button type="button"
+                                        class="action-icon"
+                                        title="Delete Product"
+                                        onclick="if(confirm('Are you sure you want to delete this product?')) location.href='@Url.Action("DeleteProduct","Supply", new { id = item.Product.productid })';">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
-<!-- Optional Quick View Modal (Optional - if you want to keep it for admin too) -->
-<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<!-- DETAILS MODAL -->
+<div class="modal fade"
+     id="productModal"
+     tabindex="-1"
+     aria-labelledby="productModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="quickViewModalLabel">Product Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="productModalLabel">Product Details</h5>
+                <button type="button"
+                        class="btn-close bg-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
-                    </div>
-                    <div class="col-md-6">
-                        <h4 id="modalProductName"></h4>
-                        <p id="modalProductDescription"></p>
-                        <p class="price">
-                            ₹<span id="modalProductPrice"></span>
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <div class="modal-body" id="productModalBody"></div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        function showQuickView(element) {
-            var card = $(element).closest('.card');
-            var imgSrc = card.find('img').attr('src');
-            var name = card.find('.card-title').text();
-            var description = card.find('.card-text').eq(2).text();
-            var price = card.find('.card-text').eq(1).text().replace('Price:', '').trim();
+        document.addEventListener('DOMContentLoaded', () => {
+            // View Details Modal Logic
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const { id, name, rating, price, description, image } = btn.dataset;
+                    const imageHtml = image
+                        ? `<img src="${image}" class="img-fluid mb-3" style="max-height:300px;" />`
+                        : '<p>No image available.</p>';
 
-            $("#modalProductImage").attr("src", imgSrc);
-            $("#modalProductName").text(name);
-            $("#modalProductPrice").text(price);
-            $("#modalProductDescription").text(description);
+                    document.getElementById('productModalBody').innerHTML = `
+                        ${imageHtml}
+                        <p><strong>Product ID:</strong> ${id}</p>
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Ratings:</strong> ${rating}</p>
+                        <p><strong>Price:</strong> ₹${price}</p>
+                        <p><strong>Description:</strong> ${description}</p>
+                    `;
 
-            $("#quickViewModal").modal("show");
-        }
+                    new bootstrap.Modal('#productModal').show();
+                });
+            });
+
+            // Live Search
+            const searchInput = document.getElementById("liveSearch");
+            const rows = document.querySelectorAll(".grid-table tbody tr");
+
+            if (searchInput) {
+                searchInput.addEventListener("keyup", function () {
+                    const query = this.value.trim().toLowerCase();
+                    rows.forEach(row => {
+                        row.style.display = [...row.cells]
+                            .some(cell => cell.textContent.toLowerCase().includes(query))
+                            ? ""
+                            : "none";
+                    });
+                });
+            }
+        });
     </script>
 }

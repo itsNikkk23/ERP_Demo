@@ -1,0 +1,168 @@
+﻿@model List<ERP.Models.DisplayProduct>
+@using ERP.Repositories
+@using ERP.Data
+
+
+  @{
+    ViewData["Title"] = "WishList";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="~/css/Index.css" />
+</head>
+<body>
+    @{
+        string userEmail = Context.Session.GetString("Email");
+        int custId = Convert.ToInt32(Context.Session.GetString("customerid"));
+    }
+    @if (!string.IsNullOrEmpty(userEmail))
+    {
+        <p>Welcome, @userEmail</p>
+        <p>Welcome, @custId</p>
+    }
+    <div class="container mt-5">
+        <h2 class="text-center">WATCH & SHOP</h2>
+        <div class="row mt-4">
+            <!-- Product 1 -->
+            @foreach (var product in Model)
+            {
+                <div class="col-md-3 col-sm-6 col-12 py-3">
+                    <div class="card product-card">
+                        <div class="position-relative">
+                            <form action="@Url.Action("AddToWishlist", "Users")" method="post">
+                                <input type="hidden" name="productid" value="@product.productid" />
+                                <input type="hidden"  asp-for="@custId" />
+
+                                <button type="submit" class="wishlist-label @(product.IsInWishlist ? "" : "added-to-wishlist")" style="background:none;border:none;">
+                                    <svg class="heart-icon" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                    </svg>
+                                </button>
+                             
+                            </form>
+                           
+
+                            @* @foreach (var img in product.ProductImages) *@
+                            @* { *@
+                            
+                            @* } *@
+
+
+                            <a asp-area="" asp-controller="Products" asp-action="ProductsDetails" asp-route-id="@product.productid">
+                                <img src="@product.ProductImages.FirstOrDefault()?.ImagePath" width="100" height="100"
+                                     class="product-img"
+                                     data-name="@product.ProductName"
+                                     data-price="@product.Price"
+                                     data-oldprice="12,800"
+                                     data-discount="16% Off"
+                                     data-description="A beautifully woven Golden Zari Saree with traditional patterns."
+                                    >
+                            </a>
+                           @*  <div class="fav-icon" onclick="toggleFavorite(this)">
+
+                                 <a href="#" class="quick-view-btn">Quick View</a>
+                            </div> *@
+                            <a href="#" class="quick-view-btn" onclick="showQuickView(this)" align="center">Quick View</a>
+                        </div>
+                        <div class="product-info">
+                            <p class="price">@product.Price<span class="original-price">@product.Price</span> <span class="discount">16% Off</span></p>
+                            <a href="#" class="buy-now">BUY NOW</a><a href="#" class="buy-now">Add To Cart</a>
+                        </div>
+                        <form action="@Url.Action("AddToCart", "Cart")" method="post">
+                            <input type="hidden" name="productId" value="@product.productid" />
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
+                        @* <div><a href="@Url.Action("Cart", "Cart")">Cart (@Session["Cart"]?.Items?.Count ?? 0)</a></div> *@
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <script>
+        function toggleFavorite(element) {
+            $(element).find("i").toggleClass("fas far");
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".product-card").hover(
+                function () {
+                    $(this).find(".quick-view-btn").fadeIn();
+                },
+                function () {
+                    $(this).find(".quick-view-btn").fadeOut();
+                }
+            );
+        });
+    </script>
+  
+    <!-- Quick View Modal -->
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quickViewModalLabel">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
+                        </div>
+                        <div class="col-md-6">
+                            <h4 id="modalProductName"></h4>
+                            <p id="modalProductDescription"></p>
+                            <p class="price">
+                                RS. <span id="modalProductPrice"></span>
+                                <span class="original-price">RS. <span id="modalProductOldPrice"></span></span>
+                                <span class="discount" id="modalProductDiscount"></span>
+                            </p>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleFavorite(element) {
+            $(element).find("i").toggleClass("fas far");
+        }
+
+        function showQuickView(element) {
+            var product = $(element).closest('.product-card');
+            var imgSrc = product.find('.product-img').attr('src');
+            var name = product.find('.product-img').data('name');
+            var price = product.find('.product-img').data('price');
+            var oldPrice = product.find('.product-img').data('oldprice');
+            var discount = product.find('.product-img').data('discount');
+            var description = product.find('.product-img').data('description');
+
+            $("#modalProductImage").attr("src", imgSrc);
+            $("#modalProductName").text(name);
+            $("#modalProductPrice").text(price);
+            $("#modalProductOldPrice").text(oldPrice);
+            $("#modalProductDiscount").text(discount);
+            $("#modalProductDescription").text(description);
+
+            $("#quickViewModal").modal("show");
+        }
+    </script>
+
+</body>
+</html>

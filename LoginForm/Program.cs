@@ -1,8 +1,7 @@
 
-using ADO_CRUD.Repositories;
-using LoginForm.Data;
-using LoginForm.Repositories;
-using LoginForm.Repository;
+using ERP.Repositories;
+using ERP.Data;
+using ERP.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<DbHelper>();
 builder.Services.AddScoped<IEmployeeRepositories, EmployeeRepositories>();
 builder.Services.AddScoped<IERPRepository, ERPRepository>();
+builder.Services.AddScoped<ICustomersRepositories, CustomersRepositories>();
 builder.Services.AddSession(options =>
 {
     //options.IdleTimeout = TimeSpan.FromHours(1); // Session expires after 1 hour of inactivity
@@ -50,6 +50,5 @@ app.MapControllerRoute(
 
 app.Run();
 
-///
 
 

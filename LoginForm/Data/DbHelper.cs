@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace LoginForm.Data
+namespace ERP.Data
 {
     public class DbHelper
     {

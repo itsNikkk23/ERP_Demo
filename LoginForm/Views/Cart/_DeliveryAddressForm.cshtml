@@ -1,0 +1,43 @@
+﻿<form id="addressForm">
+    <div class="mb-3">
+        <label for="deliveryAddress" class="form-label">Delivery Address</label>
+        <textarea class="form-control" id="deliveryAddress" name="Address" rows="3" required></textarea>
+    </div>
+    <button type="button" id="submitAddressAndPay" class="btn btn-primary">Submit Address & Pay</button>
+</form>
+
+<script>
+    document.getElementById("submitAddressAndPay").onclick = function () {
+        var address = document.getElementById("deliveryAddress").value;
+        let totalText = document.getElementById('cart-total').innerText;
+        let totalAmount = parseFloat(totalText.replace(/[^0-9.]/g, ''));
+
+        fetch('/Cart/CreateRazorpayOrderWithAddress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: totalAmount, address: address })
+        })
+        .then(response => response.json())
+        .then(data => {
+            var options = {
+                "key": "rzp_test_ff2f2hHJPr8s6m",
+                "amount": data.amount,
+                "currency": "INR",
+                "name": "ERP Store",
+                "description": "Cart Payment",
+                "order_id": data.orderId,
+                "handler": function (response) {
+                    window.location.href = "/Cart/ConfirmPayment?paymentId=" + response.razorpay_payment_id +
+                        "&orderId=" + response.razorpay_order_id +
+                        "&razorpay_signature=" + response.razorpay_signature;
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        });
+    }
+</script>

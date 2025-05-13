@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var razorpayOrderId = ViewBag.RazorpayOrderId as string;
+    var razorpayKey = ViewBag.RazorpayKey as string;
+    var amount = ViewBag.Amount;
+    var pid = ViewBag.ProductId;
+    var quantity = ViewBag.Quantity;
+}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    function openRazorpay() {
+        var options = {
+            "key": "@razorpayKey",
+            "amount": "@((int)(Convert.ToDecimal(amount) * 100))",
+            "currency": "INR",
+            "name": "My Shop",
+            "description": "Secure Payment",
+            "order_id": "@razorpayOrderId",
+            "handler": function (response) {
+                window.location.href = '/Products/PaymentSuccess?razorpay_payment_id=' + response.razorpay_payment_id
+                    + '&razorpay_order_id=' + response.razorpay_order_id
+                    + '&razorpay_signature=' + response.razorpay_signature
+                    + '&pid=' + '@pid'
+                    + '&quantity=' + '@quantity';
+            },
+            "prefill": {
+                "name": "Demo User",
+                "email": "demo@email.com",
+                "contact": "9999999999"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+    }
+
+    window.onload = openRazorpay;
+</script>
+
+<h3 class="text-center mt-5">Redirecting to secure payment...</h3>

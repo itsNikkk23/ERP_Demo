@@ -3,44 +3,238 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LoginForm</title>
+    <title>@ViewData["Title"] - ERPSystem</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/LoginForm.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ERP.styles.css" asp-append-version="true" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        #navbarNav ul li a {
+            font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+            color: #52a09e;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        #logo {
+            font-family: 'Courier New';
+            /* color: #335a5b; */
+            color: #50b2a4;
+            font-weight: bold;
+        }
+
+        .notification-bar {
+            background-color: #52a09e;
+            color: #ffffff;
+            font-size: 12px;
+            letter-spacing: 0px;
+        }
+
+            .notification-bar a, .notification-bar .social-sharing.is-clean a {
+                color: #52a09e
+            }
+
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div id="shopify-section-announcement-bar" class="shopify-section">
+            <link href="//www.verymuchindian.com/cdn/shop/t/45/assets/section-announcement-bar.min.css?v=44248374182934931231734423057" rel="stylesheet" type="text/css" media="all">
+
+            <div class="notification-bar">
+                <div class="notification-bar__message">
+                    <p>Handloom &amp; Handmade Sarees straight from Senior&nbsp;Weavers</p>
+                </div>
+            </div>
+        </div>
+        <!-- First Nav -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LoginForm</a>
+                <!-- Left Side: Search Bar -->
+
+                <div class="d-flex justify-content-between">
+                    <a class="navbar-brand fw-bold mx-auto float-start" href="/"><img src="~/logo.jpg" width="120" hight="100" style="border-radius:50%;" /></a>
+
+                    <!-- Centered Site  -->
+
+                </div>
+                <div class="navbar-nav ms-auto">
+                    <h1 id="logo">WeaveWonder</h1>
+                </div>
+
+                <!-- Right Side: Login and MyCart -->
+                <ul class="navbar-nav ms-auto ">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Search">
+                            <i class="fas fa-search"></i>
+                        </a>
+                    </li>
+
+                    @{
+                        string userEmail = Context.Session.GetString("Email");
+                        int custId = Convert.ToInt32(Context.Session.GetString("customerid"));
+                    }
+                    @if (!string.IsNullOrEmpty(userEmail))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="ChangePassword">Change Password</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="EditProfile">EditProfile </a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Logout">Logout</a></li>
+                            </ul>
+                        </li>
+
+                        @*  <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="ChangePassword"><i class="fas fa-user"></i></a>
+                        </li> *@
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Login"><i class="fas fa-user"></i></a>
+                        </li>
+                    }
+                    <li class="nav-item">
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Wishlist">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        @* <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><i class="fas fa-shopping-cart"></i> </a> *@
+                        <button class="nav-link text-dark" style="border:none;" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar" aria-controls="cartSidebar" data-bs-backdrop="true"
+                                data-bs-scroll="false">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Second Nav-->
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container" id="navbarNav">
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center ">
+                    <ul class="navbar-nav flex-grow-1 justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        @* <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Login">Login</a>
+                        </li> *@
+                        <li class="nav-item dropdown" id="loadCategories">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Collections
+                            </a>
+                            <ul class="dropdown-menu" id="categoryDropdown">
+                                <li><span class="dropdown-item text-muted">Loading...</span></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Products" asp-action="ProductsDetails">Details</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="AddProduct">Add Products</a>
                         </li>
+
                     </ul>
                 </div>
             </div>
         </nav>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function () {
+                    // Load categories only when dropdown is clicked
+                    $('#loadCategories .nav-link').on('click', function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: '/Home/GetCategories',
+                            type: 'GET',
+                            success: function (data) {
+                                $('#categoryDropdown').html(data);
+                            },
+                            error: function () {
+                                $('#categoryDropdown').html('<li class="dropdown-item text-danger">Failed to load categories</li>');
+                            }
+                        });
+                    });
+                });
+            </script>
+
+
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - LoginForm - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
+    <div class="container">
+        <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+            <div class="col mb-3">
+                <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                </a>
+                <p class="text-body-secondary">© 2024</p>
+            </div>
+
+            <div class="col mb-3">
+            </div>
+
+            <div class="col mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Pricing</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
+                </ul>
+            </div>
+
+            <div class="col mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Pricing</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
+                </ul>
+            </div>
+
+            <div class="col mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Pricing</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

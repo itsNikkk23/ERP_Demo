@@ -1,13 +1,12 @@
 ﻿
 using ERP.Models;
-using LoginForm.Data;
-using LoginForm.Models;
-using LoginForm.Repositories;
+using ERP.Data;
+using ERP.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
 using System.Data;
 
-namespace ADO_CRUD.Repositories
+namespace ERP.Repositories
 {
     
     public class EmployeeRepositories:IEmployeeRepositories
@@ -609,19 +608,21 @@ namespace ADO_CRUD.Repositories
             return employee_Attendences;
         }
 
-        public bool AddCampaign(campaign camp, byte[] campaignIMG)
+      
+        public bool AddCampaign(campaign camp)
         {
             using (SqlConnection con = _dbHelper.GetConnection())
             {
-                SqlCommand cmd = new SqlCommand("insert into crm.campaign(campaign_name,campaign_type,start_date,end_date,campaignIMG) values (@campaign_name,@campaign_type,@start_date,@end_date,@campIMG)", con);
+                SqlCommand cmd = new SqlCommand("insert into crm.campaign(campaign_name,campaign_type,start_date,end_date,campaignIMG,discount) values (@campaign_name,@campaign_type,@start_date,@end_date,@campaignIMG,@discount)", con);
                // cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@campaign_name", camp.campaign_name);
                 cmd.Parameters.AddWithValue("@campaign_type", camp.campaign_type);
                 cmd.Parameters.AddWithValue("@start_date", camp.start_date);
                 cmd.Parameters.AddWithValue("@end_date", camp.end_date);
-                cmd.Parameters.AddWithValue("@campIMG", campaignIMG ?? (object)DBNull.Value);
-
+               cmd.Parameters.AddWithValue("@campaignIMG", camp.campaignIMG);
+               cmd.Parameters.AddWithValue("@discount", camp.discount);
+              // cmd.Parameters.AddWithValue("@status", camp.status);
 
                 con.Open();
                 int rows = cmd.ExecuteNonQuery();
@@ -653,12 +654,29 @@ namespace ADO_CRUD.Repositories
                             campaign_type = reader["campaign_type"].ToString(),
                             start_date = Convert.ToDateTime(reader["start_date"]),
                             end_date = Convert.ToDateTime(reader["end_date"]),
-                            campaignIMG = reader["campaignIMG"] as byte[]
+                            campaignIMG = reader["campaignIMG"].ToString(),
+                            discount = Convert.ToDecimal(reader["discount"]),
+                            status = reader["status"].ToString(),
 
                         });
                 }
             }
             return campaigns;
+        }
+
+        public bool EditCampaignStatus(int campaign_id)
+        {
+            using (SqlConnection con = _dbHelper.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("update crm.campaign SET status = CASE WHEN status = 'Active' THEN 'Deactive' ELSE 'Active' END where campaign_id=@campaign_id", con);
+                cmd.Parameters.AddWithValue("@campaign_id", campaign_id);
+
+                con.Open();
+                int rows = cmd.ExecuteNonQuery();
+                con.Close();
+
+                return rows > 0;
+            }
         }
 
         // Handloom
@@ -776,9 +794,9 @@ namespace ADO_CRUD.Repositories
         }
 
         // Customers
-        public List<Customer> DispCustomers()
+        public List<Customers> DispCustomers()
         {
-            List<Customer> customers = new List<Customer>();
+            List<Customers> customers = new List<Customers>();
 
             using (SqlConnection con = _dbHelper.GetConnection())
             {
@@ -791,7 +809,7 @@ namespace ADO_CRUD.Repositories
                 while (reader.Read())
                 {
                     customers.Add(
-                        new Customer
+                        new Customers
                         {
                             customer_id = Convert.ToInt32(reader["customer_id"]),
                             firstName = reader["firstName"].ToString(),
